@@ -1,7 +1,11 @@
 Keynode
 ---
 
-![textfield](https://github.com/KyoheiG3/assets/blob/master/Keynode/textfield.gif)![textview](https://github.com/KyoheiG3/assets/blob/master/Keynode/textview.gif)
+* textfield example
+<p><img src="https://github.com/KyoheiG3/assets/blob/master/Keynode/textfield.gif" alt="textfield" width="200" /></p>
+
+* textview example
+<p><img src="https://github.com/KyoheiG3/assets/blob/master/Keynode/textview.gif" alt="textview" width="200" /></p>
 
 * change the scroll range at the time of the keyboard display.
 * You can perform interactive keyboard display switch.
@@ -10,22 +14,22 @@ Keynode
 ## Add to your project
 ### 1. Add project
 Add `Keynode.xcodeproj` to your target.
-![add_file](https://github.com/KyoheiG3/assets/blob/master/Keynode/add_file.png)
+<p><img src="https://github.com/KyoheiG3/assets/blob/master/Keynode/add_file.png" alt="add_file" width="400" /></p>
 
 ### 2. Change `iOS Deployment Target`
 Should be the same the `iOS Deployment Target` of your target and Keynode of project.
-![target_project](https://github.com/KyoheiG3/assets/blob/master/Keynode/target_project.png)
-![target_keynode](https://github.com/KyoheiG3/assets/blob/master/Keynode/target_keynode.png)
+<p><img src="https://github.com/KyoheiG3/assets/blob/master/Keynode/target_project.png" alt="target_project" width="400" /></p>
+<p><img src="https://github.com/KyoheiG3/assets/blob/master/Keynode/target_keynode.png" alt="target_keynode" width="400" /></p>
 
 ### 3. Link `Keynode.framework`
-![link_libraries](https://github.com/KyoheiG3/assets/blob/master/Keynode/link_libraries.png)
+<p><img src="https://github.com/KyoheiG3/assets/blob/master/Keynode/link_libraries.png" alt="link_libraries" width="400" /></p>
 
 Select `Keynode.framework` in the `Workspace`.
-![choose_framework](https://github.com/KyoheiG3/assets/blob/master/Keynode/choose_framework.png)
+<p><img src="https://github.com/KyoheiG3/assets/blob/master/Keynode/choose_framework.png" alt="choose_framework" width="200" /></p>
 
 ### 4. Add `Configuration` (Option)
 If you are adding a `Configuration` to the target, please manually add the ` Configuration` in the same way also to Keynode.
-![configurations](https://github.com/KyoheiG3/assets/blob/master/Keynode/configurations.png)
+<p><img src="https://github.com/KyoheiG3/assets/blob/master/Keynode/configurations.png" alt="configurations" width="400" /></p>
 
 
 ## Usage
@@ -86,5 +90,5 @@ var gestureOffset: CGFloat
 * If the value is not set, the value specified in the `defaultInsetBottom` will be used.
 
 ## Caution
-* Obtain the "inputAccessoryView" of "superview" and has been operating the keyboard, you might not work if the specification has been changed, but it will be addressed in the earliest possible stage.
+* Obtain the `inputAccessoryView` of `superview` and has been operating the keyboard, you might not work if the specification has been changed, but it will be addressed in the earliest possible stage.
 * `iOS7.0` ~ `iOS8.2` is confirmed operation.
