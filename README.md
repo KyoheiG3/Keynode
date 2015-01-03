@@ -16,21 +16,29 @@ Keynode
 Add `Keynode.xcodeproj` to your target.
 <p><img src="https://github.com/KyoheiG3/assets/blob/master/Keynode/add_file.png" alt="add_file" width="400" /></p>
 
-### 2. Change `iOS Deployment Target`
-Should be the same the `iOS Deployment Target` of your target and Keynode of project.
-<p><img src="https://github.com/KyoheiG3/assets/blob/master/Keynode/target_project.png" alt="target_project" width="400" /></p>
-<p><img src="https://github.com/KyoheiG3/assets/blob/master/Keynode/target_keynode.png" alt="target_keynode" width="400" /></p>
-
-### 3. Link `Keynode.framework`
+### 2. Link `Keynode.framework`
 <p><img src="https://github.com/KyoheiG3/assets/blob/master/Keynode/link_libraries.png" alt="link_libraries" width="400" /></p>
 
 Select `Keynode.framework` in the `Workspace`.
 <p><img src="https://github.com/KyoheiG3/assets/blob/master/Keynode/choose_framework.png" alt="choose_framework" width="200" /></p>
 
+### 3. Change `iOS Deployment Target` (iOS 7.1 and earlier)
+Targetting iOS 7.1 and earlier should be the same the `iOS Deployment Target` of your target and Keynode of project.
+<p><img src="https://github.com/KyoheiG3/assets/blob/master/Keynode/target_project.png" alt="target_project" width="400" /></p>
+<p><img src="https://github.com/KyoheiG3/assets/blob/master/Keynode/target_keynode.png" alt="target_keynode" width="400" /></p>
+
 ### 4. Add `Configuration` (Option)
 If you are adding a `Configuration` to the target, please manually add the ` Configuration` in the same way also to Keynode.
 <p><img src="https://github.com/KyoheiG3/assets/blob/master/Keynode/configurations.png" alt="configurations" width="400" /></p>
 
+
+## How to Install Keynode using Beta CocoaPods
+
+You need to install the beta build of CocoaPods via `[sudo] gem install cocoapods --pre` then add Keynode to your Podfile.
+
+```
+  pod 'Keynode'
+```
 
 ## Usage
 
