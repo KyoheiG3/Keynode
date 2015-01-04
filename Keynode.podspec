@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name         = "Keynode"
-  s.version      = "0.1.1"
-  s.summary      = "Interactive Keyboard Controller"
+  s.version      = "0.1.2"
+  s.summary      = "Interactive Keyboard Controller for Swift"
   s.homepage     = "https://github.com/KyoheiG3/Keynode"
   s.license      = { :type => 'MIT', :file => 'LICENSE' }
   s.author       = { "Kyohei Ito" => "je.suis.kyohei@gmail.com" }
