@@ -22,12 +22,7 @@ Add `Keynode.xcodeproj` to your target.
 Select `Keynode.framework` in the `Workspace`.
 <p><img src="https://github.com/KyoheiG3/assets/blob/master/Keynode/choose_framework.png" alt="choose_framework" width="200" /></p>
 
-### 3. Change `iOS Deployment Target` (iOS 7.1 and earlier)
-Targetting iOS 7.1 and earlier should be the same the `iOS Deployment Target` of your target and Keynode of project.
-<p><img src="https://github.com/KyoheiG3/assets/blob/master/Keynode/target_project.png" alt="target_project" width="400" /></p>
-<p><img src="https://github.com/KyoheiG3/assets/blob/master/Keynode/target_keynode.png" alt="target_keynode" width="400" /></p>
-
-### 4. Add `Configuration` (Option)
+### 3. Add `Configuration` (Option)
 If you are adding a `Configuration` to the target, please manually add the ` Configuration` in the same way also to Keynode.
 <p><img src="https://github.com/KyoheiG3/assets/blob/master/Keynode/configurations.png" alt="configurations" width="400" /></p>
 
