@@ -290,6 +290,19 @@ public class Controller: NSObject {
         let options = info.curve | .BeginFromCurrentState
         UIView.animateWithDuration(info.duration, delay: 0, options: options, animations: animations, completion: completion)
     }
+    
+    func setResponder(responder: UIResponder) {
+        firstResponder = Responder(responder)
+        if checkWork(workingTextField) {
+            return
+        }
+        
+        if delegate?.controller?(self, shouldHandlePanningKeyboardAtResponder: responder) == false {
+            gestureHandle = false
+        } else {
+            gestureHandle = true
+        }
+    }
 }
 
 // MARK: - Action Methods
@@ -332,16 +345,7 @@ extension Controller {
     
     func textDidBeginEditing(notification: NSNotification) {
         if let responder = notification.object as? UIResponder {
-            firstResponder = Responder(responder)
-            if checkWork(workingTextField) {
-                return
-            }
-            
-            if delegate?.controller?(self, shouldHandlePanningKeyboardAtResponder: responder) == false {
-                gestureHandle = false
-            } else {
-                gestureHandle = true
-            }
+            setResponder(responder)
         }
     }
     
