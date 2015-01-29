@@ -1,6 +1,11 @@
 Keynode
 ---
 
+[![Carthage Compatibility](https://img.shields.io/badge/carthage-✓-f2a77e.svg?style=flat)](https://github.com/Carthage/Carthage/)
+[![Version](https://img.shields.io/cocoapods/v/Keynode.svg?style=flat)](http://cocoadocs.org/docsets/Keynode)
+[![License](https://img.shields.io/cocoapods/l/Keynode.svg?style=flat)](http://cocoadocs.org/docsets/Keynode)
+[![Platform](https://img.shields.io/cocoapods/p/Keynode.svg?style=flat)](http://cocoadocs.org/docsets/Keynode)
+
 * textfield example
 <p><img src="https://github.com/KyoheiG3/assets/blob/master/Keynode/textfield.gif" alt="textfield" width="200" /></p>
 
@@ -12,19 +17,27 @@ Keynode
 * You can easily perform the switching of the display to match the height of the keyboard.
 
 ## Add to your project
+
 ### 1. Add project
 Add `Keynode.xcodeproj` to your target.
 <p><img src="https://github.com/KyoheiG3/assets/blob/master/Keynode/add_file.png" alt="add_file" width="400" /></p>
 
-### 2. Link `Keynode.framework`
-<p><img src="https://github.com/KyoheiG3/assets/blob/master/Keynode/link_libraries.png" alt="link_libraries" width="400" /></p>
+### 2. Add Embedded Binaries `Keynode.framework`
+<p><img src="https://github.com/KyoheiG3/assets/blob/master/Keynode/add_embedded.png" alt="add_embedded" width="400" /></p>
 
 Select `Keynode.framework` in the `Workspace`.
 <p><img src="https://github.com/KyoheiG3/assets/blob/master/Keynode/choose_framework.png" alt="choose_framework" width="200" /></p>
 
 ### 3. Add `Configuration` (Option)
-If you are adding a `Configuration` to the target, please manually add the ` Configuration` in the same way also to Keynode.
-<p><img src="https://github.com/KyoheiG3/assets/blob/master/Keynode/configurations.png" alt="configurations" width="400" /></p>
+If you are adding a `Configuration` to the target, please manually add the ` Configuration` in the same way also to SimpleAlert.
+<p><img src="https://github.com/KyoheiG3/assets/blob/master/SimpleAlert/configurations.png" alt="configurations" width="400" /></p>
+
+## Add to your project (iOS7.1 and earlier)
+
+### 1. Add source
+
+Add `Keynode.swift`.
+<p><img src="https://github.com/KyoheiG3/assets/blob/master/Keynode/add_source.png" alt="add_source" width="400" /></p>
 
 
 ## How to Install Keynode using Beta CocoaPods
