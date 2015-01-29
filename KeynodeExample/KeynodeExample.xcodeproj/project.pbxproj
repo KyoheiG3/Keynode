@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C728E0CE1A7AAC620023BFC4 /* Keynode.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7A212521A3DD6C40013D665 /* Keynode.framework */; };
+		C728E0CF1A7AAC620023BFC4 /* Keynode.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C7A212521A3DD6C40013D665 /* Keynode.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C728E0D51A7ABB4C0023BFC4 /* ThirdViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C728E0D41A7ABB4C0023BFC4 /* ThirdViewController.swift */; };
+		C728E0D71A7ABB6B0023BFC4 /* RespondButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C728E0D61A7ABB6B0023BFC4 /* RespondButton.swift */; };
 		C7A2122B1A3DAC040013D665 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A2122A1A3DAC040013D665 /* AppDelegate.swift */; };
 		C7A2122D1A3DAC040013D665 /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A2122C1A3DAC040013D665 /* FirstViewController.swift */; };
 		C7A2122F1A3DAC040013D665 /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A2122E1A3DAC040013D665 /* SecondViewController.swift */; };
@@ -14,10 +18,16 @@
 		C7A212341A3DAC040013D665 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C7A212331A3DAC040013D665 /* Images.xcassets */; };
 		C7A212371A3DAC040013D665 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = C7A212351A3DAC040013D665 /* LaunchScreen.xib */; };
 		C7A212431A3DAC040013D665 /* KeynodeExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A212421A3DAC040013D665 /* KeynodeExampleTests.swift */; };
-		C7A212551A3DDA620013D665 /* Keynode.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7A212521A3DD6C40013D665 /* Keynode.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		C728E0D01A7AAC620023BFC4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C7A2124C1A3DD6C40013D665 /* Keynode.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = C725789E1A38A2ED00F859BA;
+			remoteInfo = Keynode;
+		};
 		C7A2123D1A3DAC040013D665 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C7A2121D1A3DAC040013D665 /* Project object */;
@@ -41,7 +51,23 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		C728E0D21A7AAC630023BFC4 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				C728E0CF1A7AAC620023BFC4 /* Keynode.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		C728E0D41A7ABB4C0023BFC4 /* ThirdViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThirdViewController.swift; sourceTree = "<group>"; };
+		C728E0D61A7ABB6B0023BFC4 /* RespondButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RespondButton.swift; sourceTree = "<group>"; };
 		C7A212251A3DAC040013D665 /* KeynodeExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KeynodeExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7A212291A3DAC040013D665 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C7A2122A1A3DAC040013D665 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -61,7 +87,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C7A212551A3DDA620013D665 /* Keynode.framework in Frameworks */,
+				C728E0CE1A7AAC620023BFC4 /* Keynode.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -100,6 +126,8 @@
 				C7A2122A1A3DAC040013D665 /* AppDelegate.swift */,
 				C7A2122C1A3DAC040013D665 /* FirstViewController.swift */,
 				C7A2122E1A3DAC040013D665 /* SecondViewController.swift */,
+				C728E0D41A7ABB4C0023BFC4 /* ThirdViewController.swift */,
+				C728E0D61A7ABB6B0023BFC4 /* RespondButton.swift */,
 				C7A212301A3DAC040013D665 /* Main.storyboard */,
 				C7A212331A3DAC040013D665 /* Images.xcassets */,
 				C7A212351A3DAC040013D665 /* LaunchScreen.xib */,
@@ -152,10 +180,12 @@
 				C7A212211A3DAC040013D665 /* Sources */,
 				C7A212221A3DAC040013D665 /* Frameworks */,
 				C7A212231A3DAC040013D665 /* Resources */,
+				C728E0D21A7AAC630023BFC4 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				C728E0D11A7AAC620023BFC4 /* PBXTargetDependency */,
 			);
 			name = KeynodeExample;
 			productName = KeynodeExample;
@@ -267,7 +297,9 @@
 			files = (
 				C7A2122F1A3DAC040013D665 /* SecondViewController.swift in Sources */,
 				C7A2122B1A3DAC040013D665 /* AppDelegate.swift in Sources */,
+				C728E0D51A7ABB4C0023BFC4 /* ThirdViewController.swift in Sources */,
 				C7A2122D1A3DAC040013D665 /* FirstViewController.swift in Sources */,
+				C728E0D71A7ABB6B0023BFC4 /* RespondButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -282,6 +314,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		C728E0D11A7AAC620023BFC4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Keynode;
+			targetProxy = C728E0D01A7AAC620023BFC4 /* PBXContainerItemProxy */;
+		};
 		C7A2123E1A3DAC040013D665 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = C7A212241A3DAC040013D665 /* KeynodeExample */;
@@ -349,6 +386,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = KeynodeExample/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -452,6 +490,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = KeynodeExample/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -463,6 +502,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = KeynodeExample/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";

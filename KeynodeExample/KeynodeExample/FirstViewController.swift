@@ -15,7 +15,7 @@ class FirstViewController: UIViewController {
     @IBOutlet weak var toolbar: UIView!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var toolbarBottomSpaceConstraint: NSLayoutConstraint!
-    lazy var keynode: Controller = Controller(view: self.tableView)
+    lazy var keynode: Keynode.Controller = Keynode.Controller(view: self.tableView)
 
     override func viewDidLoad() {
         super.viewDidLoad()
