@@ -12,203 +12,232 @@ import UIKit
     /**
      * return false if need be not gesture.
      */
-    optional func controller(controller: Controller, shouldHandlePanningKeyboardAtResponder responder: UIResponder) -> Bool
+    optional func controller(controller: Keynode.Controller, shouldHandlePanningKeyboardAtResponder responder: UIResponder) -> Bool
 }
 
-class Keyboard {
-    weak var view: UIView?
-    struct Singleton {
-        static let instance = Keyboard()
-    }
-    
-    class func sharedKeyboard() -> UIView? {
-        return Singleton.instance.view
-    }
-    
-    class func setKeyboard(newValue: UIView?) {
-        if let view = newValue {
-            if Singleton.instance.view != view {
-                Singleton.instance.view = view
-            }
-        }
-    }
-}
-
-class Responder {
-    weak var responder: UIResponder?
-    var blankAccessoryView = UIView()
-    var inputAccessoryView: UIView? {
-        set {
-            if let textView = responder as? UITextView {
-                textView.inputAccessoryView = newValue
-            } else if let textField = responder as? UITextField {
-                textField.inputAccessoryView = newValue
-            }
-        }
-        get {
-            return responder?.inputAccessoryView
-        }
-    }
-    var keyboard: UIView? {
-        Keyboard.setKeyboard(inputAccessoryView?.superview)
-        
-        return Keyboard.sharedKeyboard()
-    }
-    init(_ responder: UIResponder) {
-        self.responder = responder
-        
-        if inputAccessoryView == nil {
-            inputAccessoryView = blankAccessoryView
-        } else {
-            Keyboard.setKeyboard(inputAccessoryView?.superview)
-        }
-    }
-    deinit {
-        if inputAccessoryView == blankAccessoryView {
-            inputAccessoryView = nil
-        }
-        keyboard?.hidden = false
-    }
-}
-
-class Info {
-    let AnimationDuration: NSTimeInterval = 0.25
-    let AnimationCurve: UInt = 7
-    
-    var userInfo: [NSObject : AnyObject]?
-    var duration: NSTimeInterval {
-        if let duration = userInfo?[UIKeyboardAnimationDurationUserInfoKey] as? NSTimeInterval {
-            return duration
-        }
-        return AnimationDuration
-    }
-    
-    var curve: UIViewAnimationOptions {
-        if let curve = userInfo?[UIKeyboardAnimationCurveUserInfoKey] as? UInt {
-            return animationOptionsForAnimationCurve(curve)
-        }
-        return animationOptionsForAnimationCurve(AnimationCurve)
-    }
-    
-    var frame: CGRect? {
-        let frame = userInfo?[UIKeyboardFrameEndUserInfoKey]?.CGRectValue()
-        if let rect = frame {
-            if rect.origin.x.isInfinite || rect.origin.y.isInfinite {
-                return nil
-            }
-        }
-        return frame
-    }
-    
-    init(_ userInfo: [NSObject : AnyObject]? = nil) {
-        self.userInfo = userInfo
-    }
-    
-    func animationOptionsForAnimationCurve(curve: UInt) -> UIViewAnimationOptions {
-        return UIViewAnimationOptions(curve << 16)
-    }
-}
-
-public class Controller: NSObject {
-    struct Singleton {
-        static var instance: UITextField? {
-            didSet {
-                if let textField = instance {
-                    
-                    textField.inputAccessoryView = UIView()
-                    textField.inputView = UIView()
-                    
-                    if let window = UIApplication.sharedApplication().windows.first as? UIWindow {
-                        window.addSubview(textField)
+public class Keynode {
+    @objc(KeynodeController)
+    public class Controller: NSObject {
+        private struct Singleton {
+            static var instance: UITextField? {
+                didSet {
+                    if let textField = instance {
+                        
+                        textField.inputAccessoryView = UIView()
+                        textField.inputView = UIView()
+                        
+                        if let window = UIApplication.sharedApplication().windows.first as? UIWindow {
+                            window.addSubview(textField)
+                        }
                     }
                 }
             }
         }
-    }
-    
-    var workingInstance: Controller?
-    var workingTextField: UITextField? {
-        set {
-            Singleton.instance = newValue
-        }
-        get {
-            return Singleton.instance
-        }
-    }
-    
-    override public class func initialize() {
-        super.initialize()
         
-        if self.isEqual(Controller.self) {
-            let controller = Controller()
-            controller.workingInstance = controller
+        private var workingInstance: Controller?
+        private var workingTextField: UITextField? {
+            set {
+                Singleton.instance = newValue
+            }
+            get {
+                return Singleton.instance
+            }
+        }
+        
+        public override class func initialize() {
+            super.initialize()
             
-            controller.workingTextField = UITextField()
+            if self.isEqual(Controller.self) {
+                let controller = Controller()
+                controller.workingInstance = controller
+                
+                controller.workingTextField = UITextField()
+                
+                dispatch_async(dispatch_get_main_queue()) {
+                    controller.workingTextField?.becomeFirstResponder()
+                    return
+                }
+            }
+        }
+        
+        deinit {
+            workingTextField = nil
+            NSNotificationCenter.defaultCenter().removeObserver(self)
+        }
+        
+        private var gestureHandle: Bool = true
+        private var firstResponder: Responder?
+        private weak var targetView: UIView?
+        private lazy var panGesture: UIPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: "panGestureAction:")
+        
+        public var willAnimationHandler: ((show: Bool, rect: CGRect) -> Void)?
+        public var animationsHandler: ((show: Bool, rect: CGRect) -> Void)?
+        public var completionHandler: ((show: Bool, responder: UIResponder?, keyboard: UIView?) -> Void)?
+        
+        public weak var delegate: ControllerDelegate?
+        public var gesturePanning: Bool = true
+        public var autoScrollInset: Bool = true
+        public var defaultInsetBottom: CGFloat = 0 {
+            didSet {
+                if let scrollView = targetView as? UIScrollView {
+                    scrollView.contentInset.bottom = defaultInsetBottom
+                }
+            }
+        }
+        
+        private var _gestureOffset: CGFloat?
+        public var gestureOffset: CGFloat {
+            set {
+                _gestureOffset = newValue
+            }
+            get {
+                if let offset = _gestureOffset {
+                    return offset
+                }
+                return defaultInsetBottom
+            }
+        }
+        
+        public init(view: UIView? = nil) {
+            self.targetView = view
+            super.init()
             
-            dispatch_async(dispatch_get_main_queue()) {
-                controller.workingTextField?.becomeFirstResponder()
+            let center = NSNotificationCenter.defaultCenter()
+            
+            if view != nil {
+                panGesture.delegate = self
+                
+                center.addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
+                center.addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
+                
+                center.addObserver(self, selector: "textDidBeginEditing:", name: UITextFieldTextDidBeginEditingNotification, object: nil)
+                center.addObserver(self, selector: "textDidBeginEditing:", name: UITextViewTextDidBeginEditingNotification, object: nil)
+            }
+            
+            center.addObserver(self, selector: "keyboardDidShow:", name: UIKeyboardDidShowNotification, object: nil)
+            center.addObserver(self, selector: "keyboardDidHide:", name: UIKeyboardDidHideNotification, object: nil)
+        }
+        
+        public func setResponder(responder: UIResponder) {
+            firstResponder = Responder(responder)
+            if checkWork(workingTextField) {
                 return
             }
-        }
-    }
-    
-    public var willAnimationHandler: ((show: Bool, rect: CGRect) -> Void)?
-    public var animationsHandler: ((show: Bool, rect: CGRect) -> Void)?
-    public var completionHandler: ((show: Bool, responder: UIResponder?, keyboard: UIView?) -> Void)?
-    
-    var firstResponder: Responder?
-    weak var targetView: UIView?
-    lazy var panGesture: UIPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: "panGestureAction:")
-    
-    public weak var delegate: ControllerDelegate?
-    public var gesturePanning: Bool = true
-    public var autoScrollInset: Bool = true
-    public var defaultInsetBottom: CGFloat = 0 {
-        didSet {
-            if let scrollView = targetView as? UIScrollView {
-                scrollView.contentInset.bottom = defaultInsetBottom
+            
+            if delegate?.controller?(self, shouldHandlePanningKeyboardAtResponder: responder) == false {
+                gestureHandle = false
+            } else {
+                gestureHandle = true
             }
         }
     }
-    var gestureHandle: Bool = true
-    
-    var _gestureOffset: CGFloat?
-    public var gestureOffset: CGFloat {
-        set {
-            _gestureOffset = newValue
+}
+
+private extension Keynode {
+    class Keyboard {
+        weak var view: UIView?
+        struct Singleton {
+            static let instance = Keyboard()
         }
-        get {
-            if let offset = _gestureOffset {
-                return offset
+        
+        class func sharedKeyboard() -> UIView? {
+            return Singleton.instance.view
+        }
+        
+        class func setKeyboard(newValue: UIView?) {
+            if let view = newValue {
+                if Singleton.instance.view != view {
+                    Singleton.instance.view = view
+                }
             }
-            return defaultInsetBottom
         }
     }
-    public init(view: UIView? = nil) {
-        self.targetView = view
-        super.init()
+}
+
+private extension Keynode {
+    class Responder {
+        private weak var responder: UIResponder?
+        private var blankAccessoryView = UIView()
         
-        let center = NSNotificationCenter.defaultCenter()
-        
-        if view != nil {
-            panGesture.delegate = self
-            
-            center.addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
-            center.addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
-            
-            center.addObserver(self, selector: "textDidBeginEditing:", name: UITextFieldTextDidBeginEditingNotification, object: nil)
-            center.addObserver(self, selector: "textDidBeginEditing:", name: UITextViewTextDidBeginEditingNotification, object: nil)
+        var inputAccessoryView: UIView? {
+            set {
+                if let textView = responder as? UITextView {
+                    textView.inputAccessoryView = newValue
+                } else if let textField = responder as? UITextField {
+                    textField.inputAccessoryView = newValue
+                }
+            }
+            get {
+                return responder?.inputAccessoryView
+            }
         }
         
-        center.addObserver(self, selector: "keyboardDidShow:", name: UIKeyboardDidShowNotification, object: nil)
-        center.addObserver(self, selector: "keyboardDidHide:", name: UIKeyboardDidHideNotification, object: nil)
+        var keyboard: UIView? {
+            Keynode.Keyboard.setKeyboard(inputAccessoryView?.superview)
+            
+            return Keynode.Keyboard.sharedKeyboard()
+        }
+        
+        init(_ responder: UIResponder) {
+            self.responder = responder
+            
+            if inputAccessoryView == nil {
+                inputAccessoryView = blankAccessoryView
+            } else {
+                Keyboard.setKeyboard(inputAccessoryView?.superview)
+            }
+        }
+        
+        deinit {
+            if inputAccessoryView == blankAccessoryView {
+                inputAccessoryView = nil
+            }
+            keyboard?.hidden = false
+        }
     }
-    
-    deinit {
-        workingTextField = nil
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+}
+
+private extension Keynode {
+    class Info {
+        private let AnimationDuration: NSTimeInterval = 0.25
+        private let AnimationCurve: UInt = 7
+        private var userInfo: [NSObject : AnyObject]?
+        
+        init(_ userInfo: [NSObject : AnyObject]? = nil) {
+            self.userInfo = userInfo
+        }
+        
+        var duration: NSTimeInterval {
+            if let duration = userInfo?[UIKeyboardAnimationDurationUserInfoKey] as? NSTimeInterval {
+                return duration
+            }
+            return AnimationDuration
+        }
+        
+        var curve: UIViewAnimationOptions {
+            if let curve = userInfo?[UIKeyboardAnimationCurveUserInfoKey] as? UInt {
+                return animationOptionsForAnimationCurve(curve)
+            }
+            return animationOptionsForAnimationCurve(AnimationCurve)
+        }
+        
+        var frame: CGRect? {
+            let frame = userInfo?[UIKeyboardFrameEndUserInfoKey]?.CGRectValue()
+            if let rect = frame {
+                if rect.origin.x.isInfinite || rect.origin.y.isInfinite {
+                    return nil
+                }
+            }
+            return frame
+        }
+        
+        func animationOptionsForAnimationCurve(curve: UInt) -> UIViewAnimationOptions {
+            return UIViewAnimationOptions(curve << 16)
+        }
     }
-    
+}
+
+private extension Keynode.Controller {
     func willShowAnimation(show: Bool, rect: CGRect, duration: NSTimeInterval, options: UIViewAnimationOptions) {
         var keyboardRect = convertKeyboardRect(rect)
         willAnimationHandler?(show: show, rect: keyboardRect)
@@ -286,27 +315,23 @@ public class Controller: NSObject {
             }
         }
         
-        let info = Info()
+        let info = Keynode.Info()
         let options = info.curve | .BeginFromCurrentState
         UIView.animateWithDuration(info.duration, delay: 0, options: options, animations: animations, completion: completion)
     }
     
-    func setResponder(responder: UIResponder) {
-        firstResponder = Responder(responder)
-        if checkWork(workingTextField) {
-            return
+    func checkWork(responder: UIResponder?) -> Bool {
+        if let responder = responder {
+            if responder == firstResponder?.responder {
+                return true
+            }
         }
-        
-        if delegate?.controller?(self, shouldHandlePanningKeyboardAtResponder: responder) == false {
-            gestureHandle = false
-        } else {
-            gestureHandle = true
-        }
+        return false
     }
 }
 
 // MARK: - Action Methods
-extension Controller {
+extension Keynode.Controller {
     func panGestureAction(gesture: UIPanGestureRecognizer) {
         if let keyboard = firstResponder?.keyboard {
             if let window = keyboard.window {
@@ -326,23 +351,14 @@ extension Controller {
 }
 
 // MARK: - UIGestureRecognizerDelegate Methods
-extension Controller: UIGestureRecognizerDelegate {
+extension Keynode.Controller: UIGestureRecognizerDelegate {
     public func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return gestureRecognizer == panGesture || otherGestureRecognizer == panGesture
     }
 }
 
 // MARK: - NSNotificationCenter Methods
-extension Controller {
-    func checkWork(responder: UIResponder?) -> Bool {
-        if let responder = responder {
-            if responder == firstResponder?.responder {
-                return true
-            }
-        }
-        return false
-    }
-    
+extension Keynode.Controller {
     func textDidBeginEditing(notification: NSNotification) {
         if let responder = notification.object as? UIResponder {
             setResponder(responder)
@@ -354,7 +370,7 @@ extension Controller {
             return
         }
         
-        let info = Info(notification.userInfo)
+        let info = Keynode.Info(notification.userInfo)
         
         if let rect = info.frame {
             willShowAnimation(true, rect: rect, duration: info.duration, options: info.curve | .BeginFromCurrentState)
@@ -367,7 +383,7 @@ extension Controller {
         }
         
         if let textField = workingTextField {
-            Responder(textField)
+            Keynode.Responder(textField)
             textField.resignFirstResponder()
             textField.removeFromSuperview()
             return
@@ -387,7 +403,7 @@ extension Controller {
         
         targetView?.removeGestureRecognizer(panGesture)
         
-        let info = Info(notification.userInfo)
+        let info = Keynode.Info(notification.userInfo)
         
         if let rect = info.frame {
             willShowAnimation(false, rect: rect, duration: info.duration, options: info.curve | .BeginFromCurrentState)
