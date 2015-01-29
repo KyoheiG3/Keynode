@@ -29,8 +29,8 @@ Select `Keynode.framework` in the `Workspace`.
 <p><img src="https://github.com/KyoheiG3/assets/blob/master/Keynode/choose_framework.png" alt="choose_framework" width="200" /></p>
 
 ### 3. Add `Configuration` (Option)
-If you are adding a `Configuration` to the target, please manually add the ` Configuration` in the same way also to SimpleAlert.
-<p><img src="https://github.com/KyoheiG3/assets/blob/master/SimpleAlert/configurations.png" alt="configurations" width="400" /></p>
+If you are adding a `Configuration` to the target, please manually add the ` Configuration` in the same way also to Keynode.
+<p><img src="https://github.com/KyoheiG3/assets/blob/master/Keynode/configurations.png" alt="configurations" width="400" /></p>
 
 ## Add to your project (iOS7.1 and earlier)
 
