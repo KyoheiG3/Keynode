@@ -90,7 +90,7 @@ var gesturePanning: Bool
 var autoScrollInset: Bool
 ```
 * In the case of a subclass of the target `view` is` UIScrollView`, you can specify whether the keyboard is automatically set the height of the `contentInset.bottom` of keyboard when open.
-* `view` of target is the initialization of the argument of `Controller`.
+* `view` of target is the initialization of the argument of `Connector`.
 * Default is `true`
 
 ```Swift
