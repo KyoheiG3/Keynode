@@ -8,16 +8,16 @@
 
 import UIKit
 
-@objc public protocol ControllerDelegate {
+@objc public protocol ConnectorDelegate {
     /**
      * return false if need be not gesture.
      */
-    optional func controller(controller: Keynode.Controller, shouldHandlePanningKeyboardAtResponder responder: UIResponder) -> Bool
+    optional func connector(connector: Keynode.Connector, shouldHandlePanningKeyboardAtResponder responder: UIResponder) -> Bool
 }
 
 public class Keynode {
-    @objc(KeynodeController)
-    public class Controller: NSObject {
+    @objc(KeynodeConnector)
+    public class Connector: NSObject {
         private struct Singleton {
             static var instance: UITextField? {
                 didSet {
@@ -34,7 +34,7 @@ public class Keynode {
             }
         }
         
-        private var workingInstance: Controller?
+        private var workingInstance: Connector?
         private var workingTextField: UITextField? {
             set {
                 Singleton.instance = newValue
@@ -47,14 +47,14 @@ public class Keynode {
         public override class func initialize() {
             super.initialize()
             
-            if self.isEqual(Controller.self) {
-                let controller = Controller()
-                controller.workingInstance = controller
+            if self.isEqual(Connector.self) {
+                let connector = Connector()
+                connector.workingInstance = connector
                 
-                controller.workingTextField = UITextField()
+                connector.workingTextField = UITextField()
                 
                 dispatch_async(dispatch_get_main_queue()) {
-                    controller.workingTextField?.becomeFirstResponder()
+                    connector.workingTextField?.becomeFirstResponder()
                     return
                 }
             }
@@ -74,7 +74,7 @@ public class Keynode {
         public var animationsHandler: ((show: Bool, rect: CGRect) -> Void)?
         public var completionHandler: ((show: Bool, responder: UIResponder?, keyboard: UIView?) -> Void)?
         
-        public weak var delegate: ControllerDelegate?
+        public weak var delegate: ConnectorDelegate?
         public var gesturePanning: Bool = true
         public var autoScrollInset: Bool = true
         public var defaultInsetBottom: CGFloat = 0 {
@@ -124,7 +124,7 @@ public class Keynode {
                 return
             }
             
-            if delegate?.controller?(self, shouldHandlePanningKeyboardAtResponder: responder) == false {
+            if delegate?.connector?(self, shouldHandlePanningKeyboardAtResponder: responder) == false {
                 gestureHandle = false
             } else {
                 gestureHandle = true
@@ -237,7 +237,7 @@ private extension Keynode {
     }
 }
 
-private extension Keynode.Controller {
+private extension Keynode.Connector {
     func willShowAnimation(show: Bool, rect: CGRect, duration: NSTimeInterval, options: UIViewAnimationOptions) {
         var keyboardRect = convertKeyboardRect(rect)
         willAnimationHandler?(show: show, rect: keyboardRect)
@@ -331,7 +331,7 @@ private extension Keynode.Controller {
 }
 
 // MARK: - Action Methods
-extension Keynode.Controller {
+extension Keynode.Connector {
     func panGestureAction(gesture: UIPanGestureRecognizer) {
         if let keyboard = firstResponder?.keyboard {
             if let window = keyboard.window {
@@ -351,14 +351,14 @@ extension Keynode.Controller {
 }
 
 // MARK: - UIGestureRecognizerDelegate Methods
-extension Keynode.Controller: UIGestureRecognizerDelegate {
+extension Keynode.Connector: UIGestureRecognizerDelegate {
     public func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return gestureRecognizer == panGesture || otherGestureRecognizer == panGesture
     }
 }
 
 // MARK: - NSNotificationCenter Methods
-extension Keynode.Controller {
+extension Keynode.Connector {
     func textDidBeginEditing(notification: NSNotification) {
         if let responder = notification.object as? UIResponder {
             setResponder(responder)

@@ -11,12 +11,12 @@ import Keynode
 
 class ThirdViewController: UIViewController {
     @IBOutlet weak var respondButton: RespondButton!
-    var keynode: Keynode.Controller!
+    var keynode: Keynode.Connector!
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        keynode = Keynode.Controller(view: view)
+        keynode = Keynode.Connector(view: view)
     }
     
     @IBAction func buttonWasTapped(sender: AnyObject) {
