@@ -161,6 +161,10 @@ private extension Keynode {
         
         var inputAccessoryView: UIView? {
             set {
+                if newValue == nil {
+                    return
+                }
+                
                 if let textView = responder as? UITextView {
                     textView.inputAccessoryView = newValue
                 } else if let textField = responder as? UITextField {
