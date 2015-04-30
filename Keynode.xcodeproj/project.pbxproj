@@ -127,7 +127,6 @@
 				C725789B1A38A2ED00F859BA /* Frameworks */,
 				C725789C1A38A2ED00F859BA /* Headers */,
 				C725789D1A38A2ED00F859BA /* Resources */,
-				C7A885991A38B32A00C400E5 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -207,22 +206,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		C7A885991A38B32A00C400E5 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		C725789A1A38A2ED00F859BA /* Sources */ = {
@@ -340,7 +323,6 @@
 		C72578B61A38A2ED00F859BA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APPLICATION_EXTENSION_API_ONLY = NO;
 				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -358,7 +340,6 @@
 		C72578B71A38A2ED00F859BA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APPLICATION_EXTENSION_API_ONLY = NO;
 				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -421,7 +402,6 @@
 				C72578B71A38A2ED00F859BA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
 		};
 		C72578B81A38A2ED00F859BA /* Build configuration list for PBXNativeTarget "KeynodeTests" */ = {
 			isa = XCConfigurationList;
@@ -430,7 +410,6 @@
 				C72578BA1A38A2ED00F859BA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
