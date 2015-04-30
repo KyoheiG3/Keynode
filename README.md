@@ -16,37 +16,32 @@ Keynode
 * You can perform interactive keyboard display switch.
 * You can easily perform the switching of the display to match the height of the keyboard.
 
-## Add to your project
+## How to Install Keynode
 
-### 1. Add project
-Add `Keynode.xcodeproj` to your target.
-<p><img src="https://github.com/KyoheiG3/assets/blob/master/Keynode/add_file.png" alt="add_file" width="400" /></p>
+### iOS 8+
 
-### 2. Add Embedded Binaries `Keynode.framework`
-<p><img src="https://github.com/KyoheiG3/assets/blob/master/Keynode/add_embedded.png" alt="add_embedded" width="400" /></p>
+#### Cocoapods
 
-Select `Keynode.framework` in the `Workspace`.
-<p><img src="https://github.com/KyoheiG3/assets/blob/master/Keynode/choose_framework.png" alt="choose_framework" width="200" /></p>
+Add the following to your `Podfile`:
 
-### 3. Add `Configuration` (Option)
-If you are adding a `Configuration` to the target, please manually add the ` Configuration` in the same way also to Keynode.
-<p><img src="https://github.com/KyoheiG3/assets/blob/master/Keynode/configurations.png" alt="configurations" width="400" /></p>
-
-## Add to your project (iOS7.1 and earlier)
-
-### 1. Add source
-
-Add `Keynode.swift`.
-<p><img src="https://github.com/KyoheiG3/assets/blob/master/Keynode/add_source.png" alt="add_source" width="400" /></p>
-
-
-## How to Install Keynode using Beta CocoaPods
-
-You need to install the beta build of CocoaPods via `[sudo] gem install cocoapods --pre` then add Keynode to your Podfile.
-
+```Ruby
+pod "Keynode"
+use_frameworks!
 ```
-  pod 'Keynode'
+Note: the `use_frameworks!` is required for pods made in Swift.
+
+#### Carthage
+
+Add the following to your `Cartfile`:
+
+```Ruby
+github "KyoheiG3/Keynode"
 ```
+
+### iOS 7
+
+Just add everything in the `Keynode.swift` file to your project.
+
 
 ## Usage
 
@@ -83,15 +78,15 @@ var completionHandler: ((show: Bool, responder: UIResponder?, keyboard: UIView?)
 ```Swift
 var gesturePanning: Bool
 ```
-* Set of whether or not to close the keyboard with scroll gesture.
-* Default is `true`
+* `true` is lose the keyboard at scroll gesture.
+* Default is `true`.
 
 ```Swift
 var autoScrollInset: Bool
 ```
-* In the case of a subclass of the target `view` is` UIScrollView`, you can specify whether the keyboard is automatically set the height of the `contentInset.bottom` of keyboard when open.
+* `true` is automatically set the `height` of the `UIScrollView contentInset.bottom` of keyboard when open.
 * `view` of target is the initialization of the argument of `Connector`.
-* Default is `true`
+* Default is `true`.
 
 ```Swift
 var defaultInsetBottom: CGFloat
@@ -102,15 +97,39 @@ var defaultInsetBottom: CGFloat
 ```Swift
 var gestureOffset: CGFloat
 ```
-* Such as when there is a toolbar, you can specify the offset of when closing the keyboard with scroll gesture.
+* Such as when there is a `toolbar`, you can specify the offset of when closing the keyboard with scroll gesture.
 * If the value is not set, the value specified in the `defaultInsetBottom` will be used.
+
+```Swift
+// global
+let UIResponderFirstResponderNotification: String
+```
+* Notification name for first responder.
+
+
+### Function
+
+```swift
+func setResponder(responder: UIResponder)
+```
+* Can set own responder.
+
+
+### Extension
+
+```swift
+// UIApplication
+func needNotificationForFirstResponder(from: AnyObject?)
+```
+* `UIResponderFirstResponderNotification` notification by first responder.
 
 ## Caution
 * Obtain the `inputAccessoryView` of `superview` and has been operating the keyboard, you might not work if the specification has been changed, but it will be addressed in the earliest possible stage.
-* `iOS7.0` ~ `iOS8.2` is confirmed operation.
+* `iOS7.0` ~ `iOS8.3` is confirmed operation.
 
-## Thanks
-* Inspired by DAKeyboardControl in [danielamitay](https://github.com/danielamitay).
+## Acknowledgements
+
+* Inspired by [DAKeyboardControl](https://github.com/danielamitay/DAKeyboardControl) in [danielamitay](https://github.com/danielamitay).
 
 ## LICENSE
 Under the MIT license. See LICENSE file for details.
