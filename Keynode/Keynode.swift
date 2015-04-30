@@ -75,7 +75,9 @@ public class Keynode {
         public var completionHandler: ((show: Bool, responder: UIResponder?, keyboard: UIView?) -> Void)?
         
         public weak var delegate: ConnectorDelegate?
+        /// `true` is lose the keyboard at scroll gesture.
         public var gesturePanning: Bool = true
+        /// `true` is automatically set the height of the UIScrollView contentInset.bottom of keyboard when open.
         public var autoScrollInset: Bool = true
         public var defaultInsetBottom: CGFloat = 0 {
             didSet {
@@ -85,18 +87,7 @@ public class Keynode {
             }
         }
         
-        private var _gestureOffset: CGFloat?
-        public var gestureOffset: CGFloat {
-            set {
-                _gestureOffset = newValue
-            }
-            get {
-                if let offset = _gestureOffset {
-                    return offset
-                }
-                return defaultInsetBottom
-            }
-        }
+        public lazy var gestureOffset: CGFloat = self.defaultInsetBottom
         
         public init(view: UIView? = nil) {
             self.targetView = view
@@ -112,12 +103,15 @@ public class Keynode {
                 
                 center.addObserver(self, selector: "textDidBeginEditing:", name: UITextFieldTextDidBeginEditingNotification, object: nil)
                 center.addObserver(self, selector: "textDidBeginEditing:", name: UITextViewTextDidBeginEditingNotification, object: nil)
+                
+                center.addObserver(self, selector: "didBecomeFirstResponder:", name: UIResponderFirstResponderNotification, object: nil)
             }
             
             center.addObserver(self, selector: "keyboardDidShow:", name: UIKeyboardDidShowNotification, object: nil)
             center.addObserver(self, selector: "keyboardDidHide:", name: UIKeyboardDidHideNotification, object: nil)
         }
         
+        /// Can set own responder.
         public func setResponder(responder: UIResponder) {
             firstResponder = Responder(responder)
             if checkWork(workingTextField) {
@@ -369,10 +363,18 @@ extension Keynode.Connector {
         }
     }
     
+    func didBecomeFirstResponder(notification: NSNotification) {
+        if let responder = notification.object as? UIResponder where !(responder is UITextView) && !(responder is UITextField) {
+            setResponder(responder)
+        }
+    }
+    
     func keyboardWillShow(notification: NSNotification) {
         if checkWork(workingTextField) {
             return
         }
+        
+        UIApplication.sharedApplication().needNotificationForFirstResponder(self)
         
         let info = Keynode.Info(notification.userInfo)
         
@@ -418,3 +420,22 @@ extension Keynode.Connector {
         workingInstance = nil
     }
 }
+
+internal extension UIResponder {
+    class var FirstResponderNotificationAction: Selector {
+        return Selector("firstResponderNotification:")
+    }
+    
+    func firstResponderNotification(sender: AnyObject?) {
+        NSNotificationCenter.defaultCenter().postNotificationName(UIResponderFirstResponderNotification, object: self)
+    }
+}
+
+public extension UIApplication {
+    /// `UIResponderFirstResponderNotification` notification by first responder
+    public func needNotificationForFirstResponder(from: AnyObject?) {
+        sendAction(UIResponder.FirstResponderNotificationAction, to: nil, from: from, forEvent: nil)
+    }
+}
+
+public let UIResponderFirstResponderNotification = "UIResponderFirstResponderNotification"

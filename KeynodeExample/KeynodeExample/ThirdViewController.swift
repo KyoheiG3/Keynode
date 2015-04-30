@@ -20,7 +20,6 @@ class ThirdViewController: UIViewController {
     }
     
     @IBAction func buttonWasTapped(sender: AnyObject) {
-        keynode.setResponder(respondButton)
         respondButton.becomeFirstResponder()
     }
 }
