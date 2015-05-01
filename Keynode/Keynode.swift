@@ -83,6 +83,7 @@ public class Keynode {
             didSet {
                 if let scrollView = targetView as? UIScrollView {
                     scrollView.contentInset.bottom = defaultInsetBottom
+                    scrollView.scrollIndicatorInsets.bottom = defaultInsetBottom
                 }
             }
         }
@@ -219,8 +220,16 @@ private extension Keynode {
             return animationOptionsForAnimationCurve(AnimationCurve)
         }
         
-        var frame: CGRect? {
-            let frame = userInfo?[UIKeyboardFrameEndUserInfoKey]?.CGRectValue()
+        var beginFrame: CGRect? {
+            return userInfoRect(UIKeyboardFrameBeginUserInfoKey)
+        }
+        
+        var endFrame: CGRect? {
+            return userInfoRect(UIKeyboardFrameEndUserInfoKey)
+        }
+        
+        private func userInfoRect(infoKey: String) -> CGRect? {
+            let frame = userInfo?[infoKey]?.CGRectValue()
             if let rect = frame {
                 if rect.origin.x.isInfinite || rect.origin.y.isInfinite {
                     return nil
@@ -258,6 +267,7 @@ private extension Keynode.Connector {
         if let scrollView = targetView as? UIScrollView {
             let height = max(scrollView.bounds.height - originY, 0)
             scrollView.contentInset.bottom = height + defaultInsetBottom
+            scrollView.scrollIndicatorInsets.bottom = height + defaultInsetBottom
         }
     }
     
@@ -364,7 +374,8 @@ extension Keynode.Connector {
     }
     
     func didBecomeFirstResponder(notification: NSNotification) {
-        if let responder = notification.object as? UIResponder where !(responder is UITextView) && !(responder is UITextField) {
+        if let responder = notification.userInfo?[UIResponderFirstResponderUserInfoKey] as? UIResponder
+            where !(responder is UITextView) && !(responder is UITextField) {
             setResponder(responder)
         }
     }
@@ -378,8 +389,8 @@ extension Keynode.Connector {
         
         let info = Keynode.Info(notification.userInfo)
         
-        if let rect = info.frame {
-            willShowAnimation(true, rect: rect, duration: info.duration, options: info.curve | .BeginFromCurrentState)
+        if let rect = info.endFrame {
+            willShowAnimation(true, rect: rect, duration: info.duration, options: info.curve | .BeginFromCurrentState | .OverrideInheritedDuration)
         }
     }
     
@@ -411,8 +422,8 @@ extension Keynode.Connector {
         
         let info = Keynode.Info(notification.userInfo)
         
-        if let rect = info.frame {
-            willShowAnimation(false, rect: rect, duration: info.duration, options: info.curve | .BeginFromCurrentState)
+        if let rect = info.endFrame {
+            willShowAnimation(false, rect: rect, duration: info.duration, options: info.curve | .OverrideInheritedDuration)
         }
     }
     
@@ -427,7 +438,8 @@ internal extension UIResponder {
     }
     
     func firstResponderNotification(sender: AnyObject?) {
-        NSNotificationCenter.defaultCenter().postNotificationName(UIResponderFirstResponderNotification, object: self)
+        let userInfo = [UIResponderFirstResponderUserInfoKey: self]
+        NSNotificationCenter.defaultCenter().postNotificationName(UIResponderFirstResponderNotification, object: sender, userInfo: userInfo)
     }
 }
 
@@ -438,4 +450,8 @@ public extension UIApplication {
     }
 }
 
+/// first responder notification name
 public let UIResponderFirstResponderNotification = "UIResponderFirstResponderNotification"
+
+/// first responder user info key
+public let UIResponderFirstResponderUserInfoKey = "UIResponderFirstResponderUserInfoKey"
