@@ -106,6 +106,12 @@ let UIResponderFirstResponderNotification: String
 ```
 * Notification name for first responder.
 
+```Swift
+// global
+let UIResponderFirstResponderUserInfoKey: String
+```
+* Notification user info key for first responder.
+
 
 ### Function
 
