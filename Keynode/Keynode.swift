@@ -61,7 +61,6 @@ public class Keynode {
         }
         
         deinit {
-            workingTextField = nil
             NSNotificationCenter.defaultCenter().removeObserver(self)
         }
         
@@ -400,6 +399,7 @@ extension Keynode.Connector {
         }
         
         if let textField = workingTextField {
+            workingTextField = nil
             Keynode.Responder(textField)
             textField.resignFirstResponder()
             textField.removeFromSuperview()
