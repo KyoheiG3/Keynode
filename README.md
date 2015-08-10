@@ -1,7 +1,7 @@
 Keynode
 ---
 
-[![Carthage Compatibility](https://img.shields.io/badge/carthage-✓-f2a77e.svg?style=flat)](https://github.com/Carthage/Carthage/)
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![Version](https://img.shields.io/cocoapods/v/Keynode.svg?style=flat)](http://cocoadocs.org/docsets/Keynode)
 [![License](https://img.shields.io/cocoapods/l/Keynode.svg?style=flat)](http://cocoadocs.org/docsets/Keynode)
 [![Platform](https://img.shields.io/cocoapods/p/Keynode.svg?style=flat)](http://cocoadocs.org/docsets/Keynode)
