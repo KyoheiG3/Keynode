@@ -161,6 +161,8 @@
 		C72578961A38A2ED00F859BA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftMigration = 0700;
+				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0620;
 				ORGANIZATIONNAME = kyohei_ito;
 				TargetAttributes = {
@@ -402,6 +404,7 @@
 				C72578B71A38A2ED00F859BA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		C72578B81A38A2ED00F859BA /* Build configuration list for PBXNativeTarget "KeynodeTests" */ = {
 			isa = XCConfigurationList;
@@ -410,6 +413,7 @@
 				C72578BA1A38A2ED00F859BA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

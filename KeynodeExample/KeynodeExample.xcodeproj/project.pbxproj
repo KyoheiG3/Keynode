@@ -216,6 +216,7 @@
 		C7A2121D1A3DAC040013D665 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0620;
 				ORGANIZATIONNAME = kyohei_ito;
 				TargetAttributes = {
