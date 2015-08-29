@@ -139,10 +139,24 @@ private extension Keynode {
         }
         
         class func setKeyboard(newValue: UIView?) {
-            if let view = newValue {
-                if Singleton.instance.view != view {
-                    Singleton.instance.view = view
+            func getKeyboard(keyboard: UIView) -> UIView {
+                let application = UIApplication.sharedApplication()
+                
+                if let remoteWindow = (application.windows as! [UIWindow]).filter({
+                    return $0 != keyboard.window && $0 != application.keyWindow
+                }).first {
+                    if let remoteKeyboard = (remoteWindow.rootViewController?.view.subviews as? [UIView])?.filter({ (view: UIView) in
+                        return NSStringFromClass(view.dynamicType) == NSStringFromClass(keyboard.dynamicType)
+                    }).first {
+                        return remoteKeyboard
+                    }
                 }
+                
+                return keyboard
+            }
+            
+            if let view = newValue where Singleton.instance.view != view {
+                Singleton.instance.view = getKeyboard(view)
             }
         }
     }
