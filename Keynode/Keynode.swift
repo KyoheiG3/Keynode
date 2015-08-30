@@ -26,7 +26,7 @@ public class Keynode {
                         textField.inputAccessoryView = UIView()
                         textField.inputView = UIView()
                         
-                        if let window = UIApplication.sharedApplication().windows.first as? UIWindow {
+                        if let window = UIApplication.sharedApplication().windows.first {
                             window.addSubview(textField)
                         }
                     }
@@ -50,12 +50,10 @@ public class Keynode {
             if self.isEqual(Connector.self) {
                 let connector = Connector()
                 connector.workingInstance = connector
-                
                 connector.workingTextField = UITextField()
                 
                 dispatch_async(dispatch_get_main_queue()) {
                     connector.workingTextField?.becomeFirstResponder()
-                    return
                 }
             }
         }
@@ -90,7 +88,7 @@ public class Keynode {
         public lazy var gestureOffset: CGFloat = self.defaultInsetBottom
         
         public init(view: UIView? = nil) {
-            self.targetView = view
+            targetView = view
             super.init()
             
             let center = NSNotificationCenter.defaultCenter()
@@ -165,14 +163,14 @@ private extension Keynode {
             func getKeyboard(keyboard: UIView) -> UIView {
                 let application = UIApplication.sharedApplication()
                 
-                if let remoteKeyboard = (application.windows as! [UIWindow]).reduce([], combine: { acc, window -> [UIView] in
-                    if window != keyboard.window && window != application.keyWindow, let controller = window.rootViewController {
-                        return acc + (controller.view.subviews as! [UIView]).filter({ (view: UIView) in
-                            return NSStringFromClass(view.dynamicType) == NSStringFromClass(keyboard.dynamicType)
-                        })
+                if let remoteKeyboard = application.windows.reduce([], combine: { acc, window -> [UIView] in
+                    guard window != keyboard.window && window != application.keyWindow, let controller = window.rootViewController else {
+                        return acc
                     }
                     
-                    return acc
+                    return acc + controller.view.subviews.filter({ (view: UIView) in
+                        return view.dynamicType == keyboard.dynamicType
+                    })
                 }).first {
                     return remoteKeyboard
                 } else {
@@ -271,7 +269,7 @@ private extension Keynode {
         }
         
         private func userInfoRect(infoKey: String) -> CGRect? {
-            let frame = userInfo?[infoKey]?.CGRectValue()
+            let frame = userInfo?[infoKey]?.CGRectValue
             if let rect = frame {
                 if rect.origin.x.isInfinite || rect.origin.y.isInfinite {
                     return nil
@@ -281,7 +279,7 @@ private extension Keynode {
         }
         
         func animationOptionsForAnimationCurve(curve: UInt) -> UIViewAnimationOptions {
-            return UIViewAnimationOptions(curve << 16)
+            return UIViewAnimationOptions(rawValue: curve << 16)
         }
     }
 }
@@ -366,7 +364,7 @@ private extension Keynode.Connector {
         }
         
         let info = Keynode.Info()
-        let options = info.curve | .BeginFromCurrentState
+        let options = info.curve.union(.BeginFromCurrentState)
         UIView.animateWithDuration(info.duration, delay: 0, options: options, animations: animations, completion: completion)
     }
     
@@ -383,18 +381,16 @@ private extension Keynode.Connector {
 // MARK: - Action Methods
 extension Keynode.Connector {
     func panGestureAction(gesture: UIPanGestureRecognizer) {
-        if let keyboard = firstResponder?.keyboard {
-            if let window = keyboard.window {
-                if gesture.state == .Changed {
-                    let location = gesture.locationInView(window)
-                    
-                    changeLocation(location, keyboard: keyboard, window: window)
-                } else if gesture.state == .Ended || gesture.state == .Cancelled {
-                    let location = gesture.locationInView(window)
-                    let velocity = gesture.velocityInView(keyboard)
-                    
-                    changeLocationForAnimation(location, velocity: velocity, keyboard: keyboard, window: window)
-                }
+        if let keyboard = firstResponder?.keyboard, let window = keyboard.window {
+            if gesture.state == .Changed {
+                let location = gesture.locationInView(window)
+                
+                changeLocation(location, keyboard: keyboard, window: window)
+            } else if gesture.state == .Ended || gesture.state == .Cancelled {
+                let location = gesture.locationInView(window)
+                let velocity = gesture.velocityInView(keyboard)
+                
+                changeLocationForAnimation(location, velocity: velocity, keyboard: keyboard, window: window)
             }
         }
     }
@@ -432,7 +428,7 @@ extension Keynode.Connector {
         let info = Keynode.Info(notification.userInfo)
         
         if let rect = info.endFrame {
-            willShowAnimation(true, rect: rect, duration: info.duration, options: info.curve | .BeginFromCurrentState | .OverrideInheritedDuration)
+            willShowAnimation(true, rect: rect, duration: info.duration, options: info.curve.union(.BeginFromCurrentState).union(.OverrideInheritedDuration))
         }
     }
     
@@ -443,13 +439,13 @@ extension Keynode.Connector {
         
         if let textField = workingTextField {
             workingTextField = nil
-            Keynode.Responder(textField)
+            let _ = Keynode.Responder(textField)
             textField.resignFirstResponder()
             textField.removeFromSuperview()
             return
         }
         
-        if let responder = firstResponder {
+        if firstResponder != nil {
             if gestureHandle == true && gesturePanning == true {
                 targetView?.addGestureRecognizer(panGesture)
             }
@@ -466,7 +462,7 @@ extension Keynode.Connector {
         let info = Keynode.Info(notification.userInfo)
         
         if let rect = info.endFrame {
-            willShowAnimation(false, rect: rect, duration: info.duration, options: info.curve | .OverrideInheritedDuration)
+            willShowAnimation(false, rect: rect, duration: info.duration, options: info.curve.union(.OverrideInheritedDuration))
         }
     }
     
