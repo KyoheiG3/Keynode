@@ -134,8 +134,32 @@ private extension Keynode {
             return sharedInstance.remoteKeyboard
         }
         
-        weak var remoteKeyboard: UIView?
-        weak var effectsKeyboard: UIView?
+        private weak var remoteKeyboard: UIView?
+        private weak var effectsKeyboard: UIView?
+        
+        static var frame: CGRect? {
+            get {
+                return sharedKeyboard?.frame
+            }
+            set {
+                if let frame = newValue {
+                    sharedInstance.remoteKeyboard?.frame = frame
+                    sharedInstance.effectsKeyboard?.frame = frame
+                }
+            }
+        }
+        
+        static var hidden: Bool? {
+            get {
+                return sharedKeyboard?.hidden
+            }
+            set {
+                if let hidden = newValue {
+                    sharedInstance.remoteKeyboard?.hidden = hidden
+                    sharedInstance.effectsKeyboard?.hidden = hidden
+                }
+            }
+        }
         
         class func setKeyboard(newValue: UIView?) {
             func getKeyboard(keyboard: UIView) -> UIView {
@@ -209,7 +233,7 @@ private extension Keynode {
             if inputAccessoryView == blankAccessoryView {
                 inputAccessoryView = nil
             }
-            keyboard?.hidden = false
+            Keyboard.hidden = false
         }
     }
 }
@@ -312,7 +336,7 @@ private extension Keynode.Connector {
         if keyboardRect.origin.y != keyboard.frame.origin.y {
             let show = keyboardRect.origin.y < keyboard.frame.origin.y
             animationsHandler?(show: show, rect: keyboardRect)
-            keyboard.frame = keyboardRect
+            Keynode.Keyboard.frame = keyboardRect
         }
     }
     
@@ -328,7 +352,7 @@ private extension Keynode.Connector {
         func animations() {
             offsetInsetBottom(keyboardRect.origin.y)
             animationsHandler?(show: show, rect: keyboardRect)
-            keyboard.frame = keyboardRect
+            Keynode.Keyboard.frame = keyboardRect
             
             if show == false {
                 targetView?.removeGestureRecognizer(panGesture)
@@ -336,7 +360,7 @@ private extension Keynode.Connector {
         }
         func completion(finished: Bool) {
             if show == false {
-                keyboard.hidden = true
+                Keynode.Keyboard.hidden = true
                 firstResponder?.responder?.resignFirstResponder()
             }
         }
