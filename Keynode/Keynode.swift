@@ -164,13 +164,13 @@ private extension Keynode {
                 let application = UIApplication.sharedApplication()
                 
                 if let remoteKeyboard = application.windows.reduce([], combine: { acc, window -> [UIView] in
-                    if window != keyboard.window && window != application.keyWindow, let controller = window.rootViewController {
-                        return acc + controller.view.subviews.filter({ (view: UIView) in
-                            return view.dynamicType == keyboard.dynamicType
-                        })
+                    guard window != keyboard.window && window != application.keyWindow, let controller = window.rootViewController else {
+                        return acc
                     }
                     
-                    return acc
+                    return acc + controller.view.subviews.filter({ (view: UIView) in
+                        return view.dynamicType == keyboard.dynamicType
+                    })
                 }).first {
                     return remoteKeyboard
                 } else {
