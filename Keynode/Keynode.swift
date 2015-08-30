@@ -168,7 +168,7 @@ private extension Keynode {
                 if let remoteKeyboard = (application.windows as! [UIWindow]).reduce([], combine: { acc, window -> [UIView] in
                     if window != keyboard.window && window != application.keyWindow, let controller = window.rootViewController {
                         return acc + (controller.view.subviews as! [UIView]).filter({ (view: UIView) in
-                            return reflect(view).summary == reflect(keyboard).summary
+                            return NSStringFromClass(view.dynamicType) == NSStringFromClass(keyboard.dynamicType)
                         })
                     }
                     
