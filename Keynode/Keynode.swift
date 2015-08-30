@@ -127,34 +127,39 @@ public class Keynode {
 
 private extension Keynode {
     class Keyboard {
-        weak var view: UIView?
-        struct Singleton {
-            static let instance = Keyboard()
+        static let sharedInstance = Keyboard()
+        static var sharedKeyboard: UIView? {
+            return sharedInstance.remoteKeyboard
         }
         
-        class func sharedKeyboard() -> UIView? {
-            return Singleton.instance.view
-        }
+        weak var remoteKeyboard: UIView?
+        weak var effectsKeyboard: UIView?
         
         class func setKeyboard(newValue: UIView?) {
             func getKeyboard(keyboard: UIView) -> UIView {
                 let application = UIApplication.sharedApplication()
                 
-                if let remoteWindow = application.windows.filter({
-                    return $0 != keyboard.window && $0 != application.keyWindow
-                }).first {
-                    if let remoteKeyboard = remoteWindow.rootViewController?.view.subviews.filter({ (view: UIView) in
-                        return view.dynamicType == keyboard.dynamicType
-                    }).first {
-                        return remoteKeyboard
+                if let remoteKeyboard = application.windows.reduce([], combine: { acc, window -> [UIView] in
+                    guard window != keyboard.window && window != application.keyWindow, let controller = window.rootViewController else {
+                        return acc
                     }
+                    
+                    return acc + controller.view.subviews.filter({ (view: UIView) in
+                        return view.dynamicType == keyboard.dynamicType
+                    })
+                }).first {
+                    return remoteKeyboard
+                } else {
+                    return keyboard
                 }
-                
-                return keyboard
             }
             
-            if let view = newValue where Singleton.instance.view != view {
-                Singleton.instance.view = getKeyboard(view)
+            if let view = newValue where sharedInstance.effectsKeyboard != view {
+                sharedInstance.effectsKeyboard = view
+            }
+            
+            if let Keyboard = sharedInstance.effectsKeyboard {
+                sharedInstance.remoteKeyboard = getKeyboard(Keyboard)
             }
         }
     }
@@ -185,7 +190,7 @@ private extension Keynode {
         var keyboard: UIView? {
             Keynode.Keyboard.setKeyboard(inputAccessoryView?.superview)
             
-            return Keynode.Keyboard.sharedKeyboard()
+            return Keynode.Keyboard.sharedKeyboard
         }
         
         init(_ responder: UIResponder) {
