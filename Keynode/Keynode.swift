@@ -18,29 +18,18 @@ import UIKit
 public class Keynode {
     @objc(KeynodeConnector)
     public class Connector: NSObject {
-        private struct Singleton {
-            static var instance: UITextField? {
-                didSet {
-                    if let textField = instance {
-                        
-                        textField.inputAccessoryView = UIView()
-                        textField.inputView = UIView()
-                        
-                        if let window = UIApplication.sharedApplication().windows.first {
-                            window.addSubview(textField)
-                        }
-                    }
-                }
-            }
-        }
-        
         private var workingInstance: Connector?
         private var workingTextField: UITextField? {
-            set {
-                Singleton.instance = newValue
-            }
-            get {
-                return Singleton.instance
+            didSet {
+                if let textField = workingTextField {
+                    
+                    textField.inputAccessoryView = UIView()
+                    textField.inputView = UIView()
+                    
+                    if let window = UIApplication.sharedApplication().windows.first {
+                        window.addSubview(textField)
+                    }
+                }
             }
         }
         
@@ -195,6 +184,9 @@ private extension Keynode {
         private var blankAccessoryView = UIView()
         
         var inputAccessoryView: UIView? {
+            get {
+                return responder?.inputAccessoryView
+            }
             set {
                 if newValue == nil {
                     return
@@ -205,9 +197,6 @@ private extension Keynode {
                 } else if let textField = responder as? UITextField {
                     textField.inputAccessoryView = newValue
                 }
-            }
-            get {
-                return responder?.inputAccessoryView
             }
         }
         
@@ -300,25 +289,26 @@ private extension Keynode.Connector {
     }
     
     func offsetInsetBottom(originY: CGFloat) {
-        if autoScrollInset == false {
+        guard autoScrollInset, let scrollView = targetView as? UIScrollView else {
             return
         }
         
-        if let scrollView = targetView as? UIScrollView {
-            let height = max(scrollView.bounds.height - originY, 0)
-            scrollView.contentInset.bottom = height + defaultInsetBottom
-            scrollView.scrollIndicatorInsets.bottom = height + defaultInsetBottom
-        }
+        let height = max(scrollView.bounds.height - originY, 0)
+        scrollView.contentInset.bottom = height + defaultInsetBottom
+        scrollView.scrollIndicatorInsets.bottom = height + defaultInsetBottom
     }
     
     func convertKeyboardRect(var rect: CGRect) -> CGRect {
-        if let window = targetView?.window {
-            rect = window.convertRect(rect, toView: targetView)
-            
-            if let scrollView = targetView as? UIScrollView {
-                rect.origin.y -= scrollView.contentOffset.y
-            }
+        guard let window = targetView?.window else {
+            return rect
         }
+        
+        rect = window.convertRect(rect, toView: targetView)
+        
+        if let scrollView = targetView as? UIScrollView {
+            rect.origin.y -= scrollView.contentOffset.y
+        }
+        
         return rect
     }
     
@@ -381,17 +371,19 @@ private extension Keynode.Connector {
 // MARK: - Action Methods
 extension Keynode.Connector {
     func panGestureAction(gesture: UIPanGestureRecognizer) {
-        if let keyboard = firstResponder?.keyboard, let window = keyboard.window {
-            if gesture.state == .Changed {
-                let location = gesture.locationInView(window)
-                
-                changeLocation(location, keyboard: keyboard, window: window)
-            } else if gesture.state == .Ended || gesture.state == .Cancelled {
-                let location = gesture.locationInView(window)
-                let velocity = gesture.velocityInView(keyboard)
-                
-                changeLocationForAnimation(location, velocity: velocity, keyboard: keyboard, window: window)
-            }
+        guard let keyboard = firstResponder?.keyboard, window = keyboard.window else {
+            return
+        }
+        
+        if gesture.state == .Changed {
+            let location = gesture.locationInView(window)
+            
+            changeLocation(location, keyboard: keyboard, window: window)
+        } else if gesture.state == .Ended || gesture.state == .Cancelled {
+            let location = gesture.locationInView(window)
+            let velocity = gesture.velocityInView(keyboard)
+            
+            changeLocationForAnimation(location, velocity: velocity, keyboard: keyboard, window: window)
         }
     }
 }
