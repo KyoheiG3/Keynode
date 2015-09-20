@@ -61,7 +61,7 @@ extension RespondButton: UIPickerViewDelegate, UIPickerViewDataSource {
         return contents.count
     }
     
-    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String {
+    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return String(contents[row])
     }
 }
