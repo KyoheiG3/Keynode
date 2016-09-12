@@ -11,27 +11,27 @@ import UIKit
 class RespondButton: UIButton {
     let contents = [1, 2, 3, 4, 5]
     
-    lazy private var pickerView: UIPickerView = {
+    lazy fileprivate var pickerView: UIPickerView = {
         let picker = UIPickerView()
-        picker.backgroundColor = UIColor.whiteColor()
+        picker.backgroundColor = UIColor.white
         picker.delegate = self
         picker.dataSource = self
         return picker
         }()
     
-    lazy private var accessoryToolbar: UIView = {
+    lazy fileprivate var accessoryToolbar: UIView = {
         let toolbar = UIToolbar()
-        toolbar.barStyle = .Default
+        toolbar.barStyle = .default
         toolbar.sizeToFit()
         toolbar.frame.size.height = 44
         
-        let button = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "buttonAction:")
-        let spacer = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+        let button = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(RespondButton.buttonAction(_:)))
+        let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         toolbar.items = [spacer, button]
         return toolbar
         }()
     
-    func buttonAction(sender: AnyObject) {
+    func buttonAction(_ sender: AnyObject) {
         self.resignFirstResponder()
     }
     
@@ -43,7 +43,7 @@ class RespondButton: UIButton {
         return accessoryToolbar
     }
     
-    override func canBecomeFirstResponder() -> Bool {
+    override var canBecomeFirstResponder : Bool {
         return true
     }
     
@@ -53,15 +53,15 @@ class RespondButton: UIButton {
 }
 
 extension RespondButton: UIPickerViewDelegate, UIPickerViewDataSource {
-    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
     
-    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return contents.count
     }
     
-    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return String(contents[row])
     }
 }

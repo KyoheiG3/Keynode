@@ -19,7 +19,7 @@ class ThirdViewController: UIViewController {
         keynode = Keynode.Connector(view: view)
     }
     
-    @IBAction func buttonWasTapped(sender: AnyObject) {
-        respondButton.becomeFirstResponder()
+    @IBAction func buttonWasTapped(_ sender: AnyObject) {
+        _ = respondButton.becomeFirstResponder()
     }
 }

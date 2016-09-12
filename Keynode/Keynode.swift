@@ -12,28 +12,28 @@ import UIKit
     /**
      * return false if need be not gesture.
      */
-    optional func connector(connector: Keynode.Connector, shouldHandlePanningKeyboardAtResponder responder: UIResponder) -> Bool
+    @objc optional func connector(_ connector: Keynode.Connector, shouldHandlePanningKeyboardAtResponder responder: UIResponder) -> Bool
 }
 
-public class Keynode {
+open class Keynode {
     @objc(KeynodeConnector)
-    public class Connector: NSObject {
-        private var workingInstance: Connector?
-        private var workingTextField: UITextField? {
+    open class Connector: NSObject {
+        fileprivate var workingInstance: Connector?
+        fileprivate var workingTextField: UITextField? {
             didSet {
                 if let textField = workingTextField {
                     
                     textField.inputAccessoryView = UIView()
                     textField.inputView = UIView()
                     
-                    if let window = UIApplication.sharedApplication().windows.first {
+                    if let window = UIApplication.shared.windows.first {
                         window.addSubview(textField)
                     }
                 }
             }
         }
         
-        public override class func initialize() {
+        open override class func initialize() {
             super.initialize()
             
             if self.isEqual(Connector.self) {
@@ -41,31 +41,31 @@ public class Keynode {
                 connector.workingInstance = connector
                 connector.workingTextField = UITextField()
                 
-                dispatch_async(dispatch_get_main_queue()) {
+                DispatchQueue.main.async {
                     connector.workingTextField?.becomeFirstResponder()
                 }
             }
         }
         
         deinit {
-            NSNotificationCenter.defaultCenter().removeObserver(self)
+            NotificationCenter.default.removeObserver(self)
         }
         
-        private var gestureHandle: Bool = true
-        private var firstResponder: Responder?
-        private weak var targetView: UIView?
-        private lazy var panGesture: UIPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: "panGestureAction:")
+        fileprivate var gestureHandle: Bool = true
+        fileprivate var firstResponder: Responder?
+        fileprivate weak var targetView: UIView?
+        fileprivate lazy var panGesture: UIPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(Connector.panGestureAction(_:)))
         
-        public var willAnimationHandler: ((show: Bool, rect: CGRect) -> Void)?
-        public var animationsHandler: ((show: Bool, rect: CGRect) -> Void)?
-        public var completionHandler: ((show: Bool, responder: UIResponder?, keyboard: UIView?) -> Void)?
+        open var willAnimationHandler: ((_ show: Bool, _ rect: CGRect) -> Void)?
+        open var animationsHandler: ((_ show: Bool, _ rect: CGRect) -> Void)?
+        open var completionHandler: ((_ show: Bool, _ responder: UIResponder?, _ keyboard: UIView?) -> Void)?
         
-        public weak var delegate: ConnectorDelegate?
+        open weak var delegate: ConnectorDelegate?
         /// `true` is lose the keyboard at scroll gesture.
-        public var gesturePanning: Bool = true
+        open var gesturePanning: Bool = true
         /// `true` is automatically set the height of the UIScrollView contentInset.bottom of keyboard when open.
-        public var autoScrollInset: Bool = true
-        public var defaultInsetBottom: CGFloat = 0 {
+        open var autoScrollInset: Bool = true
+        open var defaultInsetBottom: CGFloat = 0 {
             didSet {
                 if let scrollView = targetView as? UIScrollView {
                     scrollView.contentInset.bottom = defaultInsetBottom
@@ -74,32 +74,32 @@ public class Keynode {
             }
         }
         
-        public lazy var gestureOffset: CGFloat = self.defaultInsetBottom
+        open lazy var gestureOffset: CGFloat = self.defaultInsetBottom
         
         public init(view: UIView? = nil) {
             targetView = view
             super.init()
             
-            let center = NSNotificationCenter.defaultCenter()
+            let center = NotificationCenter.default
             
             if view != nil {
                 panGesture.delegate = self
                 
-                center.addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
-                center.addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
+                center.addObserver(self, selector: #selector(Connector.keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+                center.addObserver(self, selector: #selector(Connector.keyboardWillHide(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
                 
-                center.addObserver(self, selector: "textDidBeginEditing:", name: UITextFieldTextDidBeginEditingNotification, object: nil)
-                center.addObserver(self, selector: "textDidBeginEditing:", name: UITextViewTextDidBeginEditingNotification, object: nil)
+                center.addObserver(self, selector: #selector(Connector.textDidBeginEditing(_:)), name: NSNotification.Name.UITextFieldTextDidBeginEditing, object: nil)
+                center.addObserver(self, selector: #selector(Connector.textDidBeginEditing(_:)), name: NSNotification.Name.UITextViewTextDidBeginEditing, object: nil)
                 
-                center.addObserver(self, selector: "didBecomeFirstResponder:", name: UIResponderFirstResponderNotification, object: nil)
+                center.addObserver(self, selector: #selector(Connector.didBecomeFirstResponder(_:)), name: NSNotification.Name(rawValue: UIResponderFirstResponderNotification), object: nil)
             }
             
-            center.addObserver(self, selector: "keyboardDidShow:", name: UIKeyboardDidShowNotification, object: nil)
-            center.addObserver(self, selector: "keyboardDidHide:", name: UIKeyboardDidHideNotification, object: nil)
+            center.addObserver(self, selector: #selector(Connector.keyboardDidShow(_:)), name: NSNotification.Name.UIKeyboardDidShow, object: nil)
+            center.addObserver(self, selector: #selector(Connector.keyboardDidHide(_:)), name: NSNotification.Name.UIKeyboardDidHide, object: nil)
         }
         
         /// Can set own responder.
-        public func setResponder(responder: UIResponder) {
+        open func setResponder(_ responder: UIResponder) {
             firstResponder = Responder(responder)
             if checkWork(workingTextField) {
                 return
@@ -121,8 +121,8 @@ private extension Keynode {
             return sharedInstance.remoteKeyboard
         }
         
-        private weak var remoteKeyboard: UIView?
-        private weak var effectsKeyboard: UIView?
+        fileprivate weak var remoteKeyboard: UIView?
+        fileprivate weak var effectsKeyboard: UIView?
         
         static var frame: CGRect? {
             get {
@@ -138,27 +138,27 @@ private extension Keynode {
         
         static var hidden: Bool? {
             get {
-                return sharedKeyboard?.hidden
+                return sharedKeyboard?.isHidden
             }
             set {
                 if let hidden = newValue {
-                    sharedInstance.remoteKeyboard?.hidden = hidden
-                    sharedInstance.effectsKeyboard?.hidden = hidden
+                    sharedInstance.remoteKeyboard?.isHidden = hidden
+                    sharedInstance.effectsKeyboard?.isHidden = hidden
                 }
             }
         }
         
-        class func setKeyboard(newValue: UIView?) {
-            func getKeyboard(keyboard: UIView) -> UIView {
-                let application = UIApplication.sharedApplication()
+        class func setKeyboard(_ newValue: UIView?) {
+            func getKeyboard(_ keyboard: UIView) -> UIView {
+                let application = UIApplication.shared
                 
-                if let remoteKeyboard = application.windows.reduce([], combine: { acc, window -> [UIView] in
+                if let remoteKeyboard = application.windows.reduce([], { acc, window -> [UIView] in
                     guard window != keyboard.window && window != application.keyWindow, let controller = window.rootViewController else {
                         return acc
                     }
                     
                     return acc + controller.view.subviews.filter({ (view: UIView) in
-                        return view.dynamicType == keyboard.dynamicType
+                        return type(of: view) == type(of: keyboard)
                     })
                 }).first {
                     return remoteKeyboard
@@ -167,7 +167,7 @@ private extension Keynode {
                 }
             }
             
-            if let view = newValue where sharedInstance.effectsKeyboard != view {
+            if let view = newValue , sharedInstance.effectsKeyboard != view {
                 sharedInstance.effectsKeyboard = view
             }
             
@@ -180,8 +180,8 @@ private extension Keynode {
 
 private extension Keynode {
     class Responder {
-        private weak var responder: UIResponder?
-        private var blankAccessoryView = UIView()
+        fileprivate weak var responder: UIResponder?
+        fileprivate var blankAccessoryView = UIView()
         
         var inputAccessoryView: UIView? {
             get {
@@ -227,16 +227,16 @@ private extension Keynode {
 
 private extension Keynode {
     class Info {
-        private let AnimationDuration: NSTimeInterval = 0.25
-        private let AnimationCurve: UInt = 7
-        private var userInfo: [NSObject : AnyObject]?
+        fileprivate let AnimationDuration: TimeInterval = 0.25
+        fileprivate let AnimationCurve: UInt = 7
+        fileprivate var userInfo: [AnyHashable: Any]?
         
-        init(_ userInfo: [NSObject : AnyObject]? = nil) {
+        init(_ userInfo: [AnyHashable: Any]? = nil) {
             self.userInfo = userInfo
         }
         
-        var duration: NSTimeInterval {
-            if let duration = userInfo?[UIKeyboardAnimationDurationUserInfoKey] as? NSTimeInterval {
+        var duration: TimeInterval {
+            if let duration = userInfo?[UIKeyboardAnimationDurationUserInfoKey] as? TimeInterval {
                 return duration
             }
             return AnimationDuration
@@ -257,8 +257,8 @@ private extension Keynode {
             return userInfoRect(UIKeyboardFrameEndUserInfoKey)
         }
         
-        private func userInfoRect(infoKey: String) -> CGRect? {
-            let frame = userInfo?[infoKey]?.CGRectValue
+        fileprivate func userInfoRect(_ infoKey: String) -> CGRect? {
+            let frame = (userInfo?[infoKey] as? NSValue)?.cgRectValue
             if let rect = frame {
                 if rect.origin.x.isInfinite || rect.origin.y.isInfinite {
                     return nil
@@ -267,28 +267,28 @@ private extension Keynode {
             return frame
         }
         
-        func animationOptionsForAnimationCurve(curve: UInt) -> UIViewAnimationOptions {
+        func animationOptionsForAnimationCurve(_ curve: UInt) -> UIViewAnimationOptions {
             return UIViewAnimationOptions(rawValue: curve << 16)
         }
     }
 }
 
 private extension Keynode.Connector {
-    func willShowAnimation(show: Bool, rect: CGRect, duration: NSTimeInterval, options: UIViewAnimationOptions) {
+    func willShowAnimation(_ show: Bool, rect: CGRect, duration: TimeInterval, options: UIViewAnimationOptions) {
         var keyboardRect = convertKeyboardRect(rect)
-        willAnimationHandler?(show: show, rect: keyboardRect)
+        willAnimationHandler?(show, keyboardRect)
         
         func animations() {
             offsetInsetBottom(keyboardRect.origin.y)
-            animationsHandler?(show: show, rect: keyboardRect)
+            animationsHandler?(show, keyboardRect)
         }
-        func completion(finished: Bool) {
-            completionHandler?(show: show, responder: firstResponder?.responder, keyboard: firstResponder?.keyboard)
+        func completion(_ finished: Bool) {
+            completionHandler?(show, firstResponder?.responder, firstResponder?.keyboard)
         }
-        UIView.animateWithDuration(duration, delay: 0, options: options, animations: animations, completion: completion)
+        UIView.animate(withDuration: duration, delay: 0, options: options, animations: animations, completion: completion)
     }
     
-    func offsetInsetBottom(originY: CGFloat) {
+    func offsetInsetBottom(_ originY: CGFloat) {
         guard autoScrollInset, let scrollView = targetView as? UIScrollView else {
             return
         }
@@ -298,12 +298,13 @@ private extension Keynode.Connector {
         scrollView.scrollIndicatorInsets.bottom = height + defaultInsetBottom
     }
     
-    func convertKeyboardRect(var rect: CGRect) -> CGRect {
+    func convertKeyboardRect(_ rect: CGRect) -> CGRect {
+        var rect = rect
         guard let window = targetView?.window else {
             return rect
         }
         
-        rect = window.convertRect(rect, toView: targetView)
+        rect = window.convert(rect, to: targetView)
         
         if let scrollView = targetView as? UIScrollView {
             rect.origin.y -= scrollView.contentOffset.y
@@ -312,7 +313,7 @@ private extension Keynode.Connector {
         return rect
     }
     
-    func changeLocation(location: CGPoint, keyboard: UIView, window: UIWindow) {
+    func changeLocation(_ location: CGPoint, keyboard: UIView, window: UIWindow) {
         let keyboardHeight = keyboard.bounds.size.height
         let windowHeight = window.bounds.size.height
         let thresholdHeight = windowHeight - keyboardHeight
@@ -323,12 +324,12 @@ private extension Keynode.Connector {
         
         if keyboardRect.origin.y != keyboard.frame.origin.y {
             let show = keyboardRect.origin.y < keyboard.frame.origin.y
-            animationsHandler?(show: show, rect: keyboardRect)
+            animationsHandler?(show, keyboardRect)
             Keynode.Keyboard.frame = keyboardRect
         }
     }
     
-    func changeLocationForAnimation(location: CGPoint, velocity: CGPoint, keyboard: UIView, window: UIWindow) {
+    func changeLocationForAnimation(_ location: CGPoint, velocity: CGPoint, keyboard: UIView, window: UIWindow) {
         let keyboardHeight = keyboard.bounds.size.height
         let windowHeight = window.bounds.size.height
         let thresholdHeight = windowHeight - keyboardHeight
@@ -339,14 +340,14 @@ private extension Keynode.Connector {
         
         func animations() {
             offsetInsetBottom(keyboardRect.origin.y)
-            animationsHandler?(show: show, rect: keyboardRect)
+            animationsHandler?(show, keyboardRect)
             Keynode.Keyboard.frame = keyboardRect
             
             if show == false {
                 targetView?.removeGestureRecognizer(panGesture)
             }
         }
-        func completion(finished: Bool) {
+        func completion(_ finished: Bool) {
             if show == false {
                 Keynode.Keyboard.hidden = true
                 firstResponder?.responder?.resignFirstResponder()
@@ -354,11 +355,11 @@ private extension Keynode.Connector {
         }
         
         let info = Keynode.Info()
-        let options = info.curve.union(.BeginFromCurrentState)
-        UIView.animateWithDuration(info.duration, delay: 0, options: options, animations: animations, completion: completion)
+        let options = info.curve.union(.beginFromCurrentState)
+        UIView.animate(withDuration: info.duration, delay: 0, options: options, animations: animations, completion: completion)
     }
     
-    func checkWork(responder: UIResponder?) -> Bool {
+    func checkWork(_ responder: UIResponder?) -> Bool {
         if let responder = responder {
             if responder == firstResponder?.responder {
                 return true
@@ -370,18 +371,18 @@ private extension Keynode.Connector {
 
 // MARK: - Action Methods
 extension Keynode.Connector {
-    func panGestureAction(gesture: UIPanGestureRecognizer) {
-        guard let keyboard = firstResponder?.keyboard, window = keyboard.window else {
+    func panGestureAction(_ gesture: UIPanGestureRecognizer) {
+        guard let keyboard = firstResponder?.keyboard, let window = keyboard.window else {
             return
         }
         
-        if gesture.state == .Changed {
-            let location = gesture.locationInView(window)
+        if gesture.state == .changed {
+            let location = gesture.location(in: window)
             
             changeLocation(location, keyboard: keyboard, window: window)
-        } else if gesture.state == .Ended || gesture.state == .Cancelled {
-            let location = gesture.locationInView(window)
-            let velocity = gesture.velocityInView(keyboard)
+        } else if gesture.state == .ended || gesture.state == .cancelled {
+            let location = gesture.location(in: window)
+            let velocity = gesture.velocity(in: keyboard)
             
             changeLocationForAnimation(location, velocity: velocity, keyboard: keyboard, window: window)
         }
@@ -390,41 +391,41 @@ extension Keynode.Connector {
 
 // MARK: - UIGestureRecognizerDelegate Methods
 extension Keynode.Connector: UIGestureRecognizerDelegate {
-    public func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return gestureRecognizer == panGesture || otherGestureRecognizer == panGesture
     }
 }
 
 // MARK: - NSNotificationCenter Methods
 extension Keynode.Connector {
-    func textDidBeginEditing(notification: NSNotification) {
+    func textDidBeginEditing(_ notification: Notification) {
         if let responder = notification.object as? UIResponder {
             setResponder(responder)
         }
     }
     
-    func didBecomeFirstResponder(notification: NSNotification) {
-        if let responder = notification.userInfo?[UIResponderFirstResponderUserInfoKey] as? UIResponder
-            where !(responder is UITextView) && !(responder is UITextField) {
+    func didBecomeFirstResponder(_ notification: Notification) {
+        if let responder = (notification as NSNotification).userInfo?[UIResponderFirstResponderUserInfoKey] as? UIResponder
+            , !(responder is UITextView) && !(responder is UITextField) {
             setResponder(responder)
         }
     }
     
-    func keyboardWillShow(notification: NSNotification) {
+    func keyboardWillShow(_ notification: Notification) {
         if checkWork(workingTextField) {
             return
         }
         
-        UIApplication.sharedApplication().needNotificationForFirstResponder(self)
+        UIApplication.shared.needNotificationForFirstResponder(self)
         
-        let info = Keynode.Info(notification.userInfo)
+        let info = Keynode.Info((notification as NSNotification).userInfo)
         
         if let rect = info.endFrame {
-            willShowAnimation(true, rect: rect, duration: info.duration, options: info.curve.union(.BeginFromCurrentState).union(.OverrideInheritedDuration))
+            willShowAnimation(true, rect: rect, duration: info.duration, options: info.curve.union(.beginFromCurrentState).union(.overrideInheritedDuration))
         }
     }
     
-    func keyboardDidShow(notification: NSNotification) {
+    func keyboardDidShow(_ notification: Notification) {
         if checkWork(workingTextField) {
             return
         }
@@ -444,40 +445,40 @@ extension Keynode.Connector {
         }
     }
     
-    func keyboardWillHide(notification: NSNotification) {
+    func keyboardWillHide(_ notification: Notification) {
         if checkWork(workingTextField) {
             return
         }
         
         targetView?.removeGestureRecognizer(panGesture)
         
-        let info = Keynode.Info(notification.userInfo)
+        let info = Keynode.Info((notification as NSNotification).userInfo)
         
         if let rect = info.endFrame {
-            willShowAnimation(false, rect: rect, duration: info.duration, options: info.curve.union(.OverrideInheritedDuration))
+            willShowAnimation(false, rect: rect, duration: info.duration, options: info.curve.union(.overrideInheritedDuration))
         }
     }
     
-    func keyboardDidHide(notification: NSNotification) {
+    func keyboardDidHide(_ notification: Notification) {
         workingInstance = nil
     }
 }
 
 internal extension UIResponder {
     class var FirstResponderNotificationAction: Selector {
-        return Selector("firstResponderNotification:")
+        return #selector(UIResponder.firstResponderNotification(_:))
     }
     
-    func firstResponderNotification(sender: AnyObject?) {
+    func firstResponderNotification(_ sender: AnyObject?) {
         let userInfo = [UIResponderFirstResponderUserInfoKey: self]
-        NSNotificationCenter.defaultCenter().postNotificationName(UIResponderFirstResponderNotification, object: sender, userInfo: userInfo)
+        NotificationCenter.default.post(name: Notification.Name(rawValue: UIResponderFirstResponderNotification), object: sender, userInfo: userInfo)
     }
 }
 
 public extension UIApplication {
     /// `UIResponderFirstResponderNotification` notification by first responder
-    public func needNotificationForFirstResponder(from: AnyObject?) {
-        sendAction(UIResponder.FirstResponderNotificationAction, to: nil, from: from, forEvent: nil)
+    public func needNotificationForFirstResponder(_ from: AnyObject?) {
+        sendAction(UIResponder.FirstResponderNotificationAction, to: nil, from: from, for: nil)
     }
 }
 
