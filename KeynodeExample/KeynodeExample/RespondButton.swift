@@ -31,7 +31,7 @@ class RespondButton: UIButton {
         return toolbar
         }()
     
-    func buttonAction(_ sender: AnyObject) {
+    @objc func buttonAction(_ sender: AnyObject) {
         self.resignFirstResponder()
     }
     

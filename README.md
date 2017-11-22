@@ -138,7 +138,7 @@ func needNotificationForFirstResponder(from: AnyObject?)
 
 ## Caution
 * Obtain the `inputAccessoryView` of `superview` and has been operating the keyboard, you might not work if the specification has been changed, but it will be addressed in the earliest possible stage.
-* `iOS7.0` ~ `iOS10.0` is confirmed operation.
+* `iOS7.0` ~ `iOS11.0` is confirmed operation.
 
 ## Acknowledgements
 

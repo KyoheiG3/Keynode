@@ -16,13 +16,29 @@ import UIKit
 }
 
 open class Keynode {
+    private static var connector: Connector? = {
+        let connector = Connector(instance: ())
+        connector.workingTextField = UITextField()
+
+        DispatchQueue.main.async {
+            connector.workingTextField?.becomeFirstResponder()
+        }
+
+        return connector
+    }()
     @objc(KeynodeConnector)
     open class Connector: NSObject {
+        fileprivate init(instance: Void) {
+            super.init()
+            let center = NotificationCenter.default
+            center.addObserver(self, selector: #selector(Connector.keyboardDidShow(_:)), name: .UIKeyboardDidShow, object: nil)
+            center.addObserver(self, selector: #selector(Connector.keyboardDidHide(_:)), name: .UIKeyboardDidHide, object: nil)
+            workingInstance = self
+        }
         fileprivate var workingInstance: Connector?
         fileprivate var workingTextField: UITextField? {
             didSet {
                 if let textField = workingTextField {
-                    
                     textField.inputAccessoryView = UIView()
                     textField.inputView = UIView()
                     
@@ -32,21 +48,7 @@ open class Keynode {
                 }
             }
         }
-        
-        open override class func initialize() {
-            super.initialize()
-            
-            if self.isEqual(Connector.self) {
-                let connector = Connector()
-                connector.workingInstance = connector
-                connector.workingTextField = UITextField()
-                
-                DispatchQueue.main.async {
-                    connector.workingTextField?.becomeFirstResponder()
-                }
-            }
-        }
-        
+
         deinit {
             NotificationCenter.default.removeObserver(self)
         }
@@ -77,6 +79,7 @@ open class Keynode {
         open lazy var gestureOffset: CGFloat = self.defaultInsetBottom
         
         public init(view: UIView? = nil) {
+            connector = nil // referencing of initialize for keyboard.
             targetView = view
             super.init()
             
@@ -371,7 +374,7 @@ private extension Keynode.Connector {
 
 // MARK: - Action Methods
 extension Keynode.Connector {
-    func panGestureAction(_ gesture: UIPanGestureRecognizer) {
+    @objc func panGestureAction(_ gesture: UIPanGestureRecognizer) {
         guard let keyboard = firstResponder?.keyboard, let window = keyboard.window else {
             return
         }
@@ -398,20 +401,20 @@ extension Keynode.Connector: UIGestureRecognizerDelegate {
 
 // MARK: - NSNotificationCenter Methods
 extension Keynode.Connector {
-    func textDidBeginEditing(_ notification: Notification) {
+    @objc func textDidBeginEditing(_ notification: Notification) {
         if let responder = notification.object as? UIResponder {
             setResponder(responder)
         }
     }
     
-    func didBecomeFirstResponder(_ notification: Notification) {
+    @objc func didBecomeFirstResponder(_ notification: Notification) {
         if let responder = (notification as NSNotification).userInfo?[UIResponderFirstResponderUserInfoKey] as? UIResponder
             , !(responder is UITextView) && !(responder is UITextField) {
             setResponder(responder)
         }
     }
     
-    func keyboardWillShow(_ notification: Notification) {
+    @objc func keyboardWillShow(_ notification: Notification) {
         if checkWork(workingTextField) {
             return
         }
@@ -425,7 +428,7 @@ extension Keynode.Connector {
         }
     }
     
-    func keyboardDidShow(_ notification: Notification) {
+    @objc func keyboardDidShow(_ notification: Notification) {
         if checkWork(workingTextField) {
             return
         }
@@ -445,7 +448,7 @@ extension Keynode.Connector {
         }
     }
     
-    func keyboardWillHide(_ notification: Notification) {
+    @objc func keyboardWillHide(_ notification: Notification) {
         if checkWork(workingTextField) {
             return
         }
@@ -459,7 +462,7 @@ extension Keynode.Connector {
         }
     }
     
-    func keyboardDidHide(_ notification: Notification) {
+    @objc func keyboardDidHide(_ notification: Notification) {
         workingInstance = nil
     }
 }
@@ -469,7 +472,7 @@ internal extension UIResponder {
         return #selector(UIResponder.firstResponderNotification(_:))
     }
     
-    func firstResponderNotification(_ sender: AnyObject?) {
+    @objc func firstResponderNotification(_ sender: AnyObject?) {
         let userInfo = [UIResponderFirstResponderUserInfoKey: self]
         NotificationCenter.default.post(name: Notification.Name(rawValue: UIResponderFirstResponderNotification), object: sender, userInfo: userInfo)
     }
