@@ -11,6 +11,14 @@
 		C72578AB1A38A2ED00F859BA /* Keynode.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C725789F1A38A2ED00F859BA /* Keynode.framework */; };
 		C72578B21A38A2ED00F859BA /* KeynodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72578B11A38A2ED00F859BA /* KeynodeTests.swift */; };
 		C72578BC1A38A30400F859BA /* Keynode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72578BB1A38A30400F859BA /* Keynode.swift */; };
+		C76EA6511FC694CB008A4747 /* KeynodeDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76EA6501FC694CB008A4747 /* KeynodeDelegate.swift */; };
+		C7C7B4581FC5EDF40074EAAF /* Info.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7C7B4571FC5EDF40074EAAF /* Info.swift */; };
+		C7C7B45B1FC5EF200074EAAF /* Responder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7C7B45A1FC5EF200074EAAF /* Responder.swift */; };
+		C7C7B45E1FC5F07C0074EAAF /* InputAccessoryType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7C7B45D1FC5F07C0074EAAF /* InputAccessoryType.swift */; };
+		C7C7B4601FC5F0A70074EAAF /* Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7C7B45F1FC5F0A70074EAAF /* Keyboard.swift */; };
+		C7C7B4641FC5F1600074EAAF /* Notification+Info.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7C7B4631FC5F1600074EAAF /* Notification+Info.swift */; };
+		C7C7B4661FC5F1A20074EAAF /* UIResponder+Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7C7B4651FC5F1A20074EAAF /* UIResponder+Notification.swift */; };
+		C7C7B4681FC5F1C70074EAAF /* UIApplication+UIResponder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7C7B4671FC5F1C70074EAAF /* UIApplication+UIResponder.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,6 +39,14 @@
 		C72578B01A38A2ED00F859BA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C72578B11A38A2ED00F859BA /* KeynodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeynodeTests.swift; sourceTree = "<group>"; };
 		C72578BB1A38A30400F859BA /* Keynode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Keynode.swift; sourceTree = "<group>"; };
+		C76EA6501FC694CB008A4747 /* KeynodeDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeynodeDelegate.swift; sourceTree = "<group>"; };
+		C7C7B4571FC5EDF40074EAAF /* Info.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Info.swift; sourceTree = "<group>"; };
+		C7C7B45A1FC5EF200074EAAF /* Responder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Responder.swift; sourceTree = "<group>"; };
+		C7C7B45D1FC5F07C0074EAAF /* InputAccessoryType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputAccessoryType.swift; sourceTree = "<group>"; };
+		C7C7B45F1FC5F0A70074EAAF /* Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keyboard.swift; sourceTree = "<group>"; };
+		C7C7B4631FC5F1600074EAAF /* Notification+Info.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification+Info.swift"; sourceTree = "<group>"; };
+		C7C7B4651FC5F1A20074EAAF /* UIResponder+Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIResponder+Notification.swift"; sourceTree = "<group>"; };
+		C7C7B4671FC5F1C70074EAAF /* UIApplication+UIResponder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+UIResponder.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,19 +89,19 @@
 		C72578A11A38A2ED00F859BA /* Keynode */ = {
 			isa = PBXGroup;
 			children = (
+				C72578A31A38A2ED00F859BA /* Info.plist */,
+				C7C7B4571FC5EDF40074EAAF /* Info.swift */,
+				C7C7B45D1FC5F07C0074EAAF /* InputAccessoryType.swift */,
+				C7C7B45F1FC5F0A70074EAAF /* Keyboard.swift */,
 				C72578A41A38A2ED00F859BA /* Keynode.h */,
 				C72578BB1A38A30400F859BA /* Keynode.swift */,
-				C72578A21A38A2ED00F859BA /* Supporting Files */,
+				C76EA6501FC694CB008A4747 /* KeynodeDelegate.swift */,
+				C7C7B4631FC5F1600074EAAF /* Notification+Info.swift */,
+				C7C7B45A1FC5EF200074EAAF /* Responder.swift */,
+				C7C7B4671FC5F1C70074EAAF /* UIApplication+UIResponder.swift */,
+				C7C7B4651FC5F1A20074EAAF /* UIResponder+Notification.swift */,
 			);
 			path = Keynode;
-			sourceTree = "<group>";
-		};
-		C72578A21A38A2ED00F859BA /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				C72578A31A38A2ED00F859BA /* Info.plist */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		C72578AE1A38A2ED00F859BA /* KeynodeTests */ = {
@@ -217,6 +233,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				C72578BC1A38A30400F859BA /* Keynode.swift in Sources */,
+				C7C7B45E1FC5F07C0074EAAF /* InputAccessoryType.swift in Sources */,
+				C7C7B4661FC5F1A20074EAAF /* UIResponder+Notification.swift in Sources */,
+				C7C7B4641FC5F1600074EAAF /* Notification+Info.swift in Sources */,
+				C7C7B4601FC5F0A70074EAAF /* Keyboard.swift in Sources */,
+				C76EA6511FC694CB008A4747 /* KeynodeDelegate.swift in Sources */,
+				C7C7B4581FC5EDF40074EAAF /* Info.swift in Sources */,
+				C7C7B45B1FC5EF200074EAAF /* Responder.swift in Sources */,
+				C7C7B4681FC5F1C70074EAAF /* UIApplication+UIResponder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
