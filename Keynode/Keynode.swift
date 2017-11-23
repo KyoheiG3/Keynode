@@ -19,11 +19,7 @@ open class Keynode {
     private static var connector: Connector? = {
         let connector = Connector(instance: ())
         connector.workingTextField = UITextField()
-
-        DispatchQueue.main.async {
-            connector.workingTextField?.becomeFirstResponder()
-        }
-
+        connector.workingTextField?.becomeFirstResponder()
         return connector
     }()
     @objc(KeynodeConnector)
