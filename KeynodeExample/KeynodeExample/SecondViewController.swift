@@ -11,11 +11,11 @@ import Keynode
 
 class SecondViewController: UIViewController {
     @IBOutlet weak var textView: UITextView!
-    var keynode: Keynode.Connector!
+    var keynode: Keynode!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        keynode = Keynode.Connector(view: textView)
+        keynode = Keynode(view: textView)
     }
 }

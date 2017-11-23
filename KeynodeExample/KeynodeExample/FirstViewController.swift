@@ -15,24 +15,24 @@ class FirstViewController: UIViewController {
     @IBOutlet weak var toolbar: UIView!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var toolbarBottomSpaceConstraint: NSLayoutConstraint!
-    lazy var keynode: Keynode.Connector = Keynode.Connector(view: self.tableView)
+    lazy var keynode: Keynode = Keynode(view: self.tableView)
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         keynode.defaultInsetBottom = toolbar.bounds.height
-        keynode.willAnimationHandler = { [weak self] show, rect in
-            if let me = self {
-                me.toolbarBottomSpaceConstraint.constant = show ? rect.size.height : 0
+        keynode
+            .willAnimate { [weak self] show, rect in
+                if let me = self {
+                    me.toolbarBottomSpaceConstraint.constant = show ? rect.size.height : 0
+                }
             }
-        }
-        
-        keynode.animationsHandler = { [weak self] show, rect in
-            if let me = self {
-                me.toolbarBottomSpaceConstraint.constant = max(me.tableView.bounds.height - rect.origin.y, 0)
-                me.view.layoutIfNeeded()
+            .animations { [weak self] show, rect in
+                if let me = self {
+                    me.toolbarBottomSpaceConstraint.constant = max(me.tableView.bounds.height - rect.origin.y, 0)
+                    me.view.layoutIfNeeded()
+                }
             }
-        }
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "UITableViewCell")
     }
