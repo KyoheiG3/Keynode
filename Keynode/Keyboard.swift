@@ -44,16 +44,10 @@ final class Keyboard {
             effectsKeyboard = view
         }
 
-        if let effects = effectsKeyboard {
-            let application = UIApplication.shared
-            let remote = application.windows
-                .filter { $0 != effects.window && $0 != application.keyWindow }
-                .flatMap { $0.rootViewController?.view.subviews }
-                .flatMap { $0 }
-                .filter { type(of: $0) == type(of: effects) }
-                .first
-            remoteKeyboard = remote ?? effects
-        }
+        let application = UIApplication.shared
+        remoteKeyboard = application.windows
+            .filter { "\(type(of: $0))" == "UIRemoteKeyboardWindow" }
+            .first?.subviews.first?.subviews.first
     }
 }
 

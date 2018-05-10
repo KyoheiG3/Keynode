@@ -9,45 +9,8 @@
 import UIKit
 
 public final class Keynode: NSObject {
-    private static var keynode: Keynode? = {
-        let connector = Keynode()
-        connector.workingTextField = UITextField()
-        connector.workingTextField?.becomeFirstResponder()
-        return connector
-    }()
-
-    private override init() {
-        super.init()
-        workingInstance = self
-
-        let center = NotificationCenter.default
-        observers.append(center.addObserver(forName: .UIKeyboardDidShow, object: nil, queue: nil) { [weak self] notification in
-            guard let textField = self?.workingTextField else { return }
-            self?.workingTextField = nil
-            let _ = Responder(textField)
-            textField.resignFirstResponder()
-            textField.removeFromSuperview()
-        })
-        observers.append(center.addObserver(forName: .UIKeyboardDidHide, object: nil, queue: nil) { [weak self] notification in
-            self?.workingInstance = nil
-        })
-    }
-
-    private var observers: [NSObjectProtocol] = []
-    private var workingInstance: Keynode?
-    private var workingTextField: UITextField? {
-        didSet {
-            guard let textField = workingTextField else { return }
-
-            textField.inputAccessoryView = UIView()
-            textField.inputView = UIView()
-            UIApplication.shared.windows.first?.addSubview(textField)
-        }
-    }
-
     deinit {
         NotificationCenter.default.removeObserver(self)
-        observers.forEach(NotificationCenter.default.removeObserver)
     }
 
     var isGestureHandlingEnabled: Bool = true
@@ -76,7 +39,6 @@ public final class Keynode: NSObject {
     public lazy var gestureOffset: CGFloat = self.defaultInsetBottom
 
     public init(view: UIView) {
-        Keynode.keynode = nil // referencing of initialize for keyboard.
         targetView = view
         super.init()
         panGesture.delegate = self
