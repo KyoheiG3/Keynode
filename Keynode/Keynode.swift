@@ -48,9 +48,6 @@ public final class Keynode: NSObject {
         center.addObserver(self, selector: #selector(Keynode.keyboardWillHide(_:)), name: .UIKeyboardWillHide, object: nil)
         center.addObserver(self, selector: #selector(Keynode.keyboardDidShow(_:)), name: .UIKeyboardDidShow, object: nil)
 
-        center.addObserver(self, selector: #selector(Keynode.textDidBeginEditing(_:)), name: .UITextFieldTextDidBeginEditing, object: nil)
-        center.addObserver(self, selector: #selector(Keynode.textDidBeginEditing(_:)), name: .UITextViewTextDidBeginEditing, object: nil)
-
         center.addObserver(self, selector: #selector(Keynode.didBecomeFirstResponder(_:)), name: .UIResponderBecomeFirstResponder, object: nil)
     }
 
@@ -200,14 +197,8 @@ extension Keynode: UIGestureRecognizerDelegate {
 
 // MARK: - NotificationCenter Methods
 extension Keynode {
-    @objc func textDidBeginEditing(_ notification: Notification) {
-        if let responder = notification.object as? UIResponder {
-            setResponder(responder)
-        }
-    }
-
     @objc func didBecomeFirstResponder(_ notification: Notification) {
-        if let responder = notification.object as? UIResponder, !(responder is InputAccessoryType) {
+        if let responder = notification.object as? UIResponder {
             setResponder(responder)
         }
     }
