@@ -17,6 +17,7 @@ public final class Keynode: NSObject {
     var firstResponder: Responder?
     weak var targetView: UIView?
     lazy var panGesture: UIPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(Keynode.panGestureAction(_:)))
+    var initialInsetBottom: CGFloat?
 
     var willAnimateHandler: ((_ show: Bool, _ rect: CGRect) -> Void)?
     var animationsHandler: ((_ show: Bool, _ rect: CGRect) -> Void)?
@@ -36,7 +37,7 @@ public final class Keynode: NSObject {
         }
     }
 
-    public lazy var gestureOffset: CGFloat = self.defaultInsetBottom
+    public var gestureOffset: CGFloat = 0
 
     public init(view: UIView) {
         targetView = view
@@ -82,9 +83,14 @@ extension Keynode {
             return
         }
 
+        if initialInsetBottom == nil {
+            initialInsetBottom = scrollView.contentInset.bottom
+        }
+
         let height = max(scrollView.bounds.height - originY, 0)
-        scrollView.contentInset.bottom = height + defaultInsetBottom
-        scrollView.scrollIndicatorInsets.bottom = height + defaultInsetBottom
+        let offset = height == 0 ? (initialInsetBottom ?? 0) : 0
+        scrollView.contentInset.bottom = height + offset + defaultInsetBottom
+        scrollView.scrollIndicatorInsets.bottom = height + offset + defaultInsetBottom
     }
 
     func convert(_ rect: CGRect) -> CGRect {
