@@ -83,12 +83,19 @@ extension Keynode {
             return
         }
 
+        let safeAreaInsetsBottom: CGFloat
+        if #available(iOS 11.0, *) {
+            safeAreaInsetsBottom = scrollView.safeAreaInsets.bottom
+        } else {
+            safeAreaInsetsBottom = 0
+        }
+
         if initialInsetBottom == nil {
             initialInsetBottom = scrollView.contentInset.bottom
         }
 
         let height = max(scrollView.bounds.height - originY, 0)
-        let offset = height == 0 ? (initialInsetBottom ?? 0) : 0
+        let offset = height == 0 ? (initialInsetBottom ?? 0) : -safeAreaInsetsBottom
         scrollView.contentInset.bottom = height + offset + defaultInsetBottom
         scrollView.scrollIndicatorInsets.bottom = height + offset + defaultInsetBottom
     }
