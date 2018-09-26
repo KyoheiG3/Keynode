@@ -19,7 +19,7 @@ Using `UIScrollViewKeyboardDismissMode` added in iOS7, interactive keyboard oper
 
 ## Requirements
 
-- Swift 4.1
+- Swift 4.2
 - iOS 9.0 or later
 
 ## How to Install
@@ -120,7 +120,7 @@ extension UIApplication {
 ## Caution
 
 - It might not work if the specification has been changed. however it will be solved in the earliest possible stage.
-- `iOS9.0` ~ `iOS11.3` is confirmed operation.
+- `iOS9.0` ~ `iOS12.0` is confirmed operation.
 
 ## Acknowledgements
 
