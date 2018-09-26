@@ -16,25 +16,25 @@ struct Info {
     }
 
     var duration: TimeInterval {
-        if let duration = userInfo?[UIKeyboardAnimationDurationUserInfoKey] as? TimeInterval {
+        if let duration = userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? TimeInterval {
             return duration
         }
         return animationDuration
     }
 
-    var curve: UIViewAnimationOptions {
-        if let curve = userInfo?[UIKeyboardAnimationCurveUserInfoKey] as? UInt {
+    var curve: UIView.AnimationOptions {
+        if let curve = userInfo?[UIResponder.keyboardAnimationCurveUserInfoKey] as? UInt {
             return animationOptions(for: curve)
         }
         return animationOptions(for: animationCurve)
     }
 
     var beginFrame: CGRect? {
-        return userInfoRect(UIKeyboardFrameBeginUserInfoKey)
+        return userInfoRect(UIResponder.keyboardFrameBeginUserInfoKey)
     }
 
     var endFrame: CGRect? {
-        return userInfoRect(UIKeyboardFrameEndUserInfoKey)
+        return userInfoRect(UIResponder.keyboardFrameEndUserInfoKey)
     }
 
     private func userInfoRect(_ infoKey: String) -> CGRect? {
@@ -45,8 +45,8 @@ struct Info {
         return frame
     }
 
-    private func animationOptions(for animationCurve: UInt) -> UIViewAnimationOptions {
-        return UIViewAnimationOptions(rawValue: animationCurve << 16)
+    private func animationOptions(for animationCurve: UInt) -> UIView.AnimationOptions {
+        return UIView.AnimationOptions(rawValue: animationCurve << 16)
     }
 }
 

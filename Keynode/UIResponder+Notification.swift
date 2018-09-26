@@ -8,11 +8,9 @@
 
 extension UIResponder {
     @objc func firstResponder(_ sender: AnyObject?) {
-        NotificationCenter.default.post(name: .UIResponderBecomeFirstResponder, object: self, userInfo: nil)
+        NotificationCenter.default.post(name: UIResponder.becomeFirstResponder, object: self, userInfo: nil)
     }
-}
 
-public extension Notification.Name {
     /// first responder notification name
-    public static let UIResponderBecomeFirstResponder = Notification.Name("UIResponderBecomeFirstResponder")
+    public static let becomeFirstResponder = Notification.Name("UIResponderBecomeFirstResponder")
 }

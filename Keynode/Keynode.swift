@@ -45,11 +45,11 @@ public final class Keynode: NSObject {
         panGesture.delegate = self
 
         let center = NotificationCenter.default
-        center.addObserver(self, selector: #selector(Keynode.keyboardWillShow(_:)), name: .UIKeyboardWillShow, object: nil)
-        center.addObserver(self, selector: #selector(Keynode.keyboardWillHide(_:)), name: .UIKeyboardWillHide, object: nil)
-        center.addObserver(self, selector: #selector(Keynode.keyboardDidShow(_:)), name: .UIKeyboardDidShow, object: nil)
+        center.addObserver(self, selector: #selector(Keynode.keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        center.addObserver(self, selector: #selector(Keynode.keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+        center.addObserver(self, selector: #selector(Keynode.keyboardDidShow(_:)), name: UIResponder.keyboardDidShowNotification, object: nil)
 
-        center.addObserver(self, selector: #selector(Keynode.didBecomeFirstResponder(_:)), name: .UIResponderBecomeFirstResponder, object: nil)
+        center.addObserver(self, selector: #selector(Keynode.didBecomeFirstResponder(_:)), name: UIResponder.becomeFirstResponder, object: nil)
     }
 
     public func setResponder(_ responder: UIResponder) {
@@ -64,7 +64,7 @@ public final class Keynode: NSObject {
 }
 
 extension Keynode {
-    func willShowAnimation(_ show: Bool, rect: CGRect, duration: TimeInterval, options: UIViewAnimationOptions) {
+    func willShowAnimation(_ show: Bool, rect: CGRect, duration: TimeInterval, options: UIView.AnimationOptions) {
         var keyboardRect = convert(rect)
         willAnimateHandler?(show, keyboardRect)
 
